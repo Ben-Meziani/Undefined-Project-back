@@ -26,7 +26,7 @@ class RegistrationController extends AbstractController
         //$post->setPassword(le mdp encrypter)
 
         //persist et flush  
-       // $em->persist($post);
-       // $em->flush();
+        //$em->persist($post);
+        //$em->flush();
     }
 }
