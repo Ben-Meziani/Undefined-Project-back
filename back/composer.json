@@ -23,6 +23,7 @@
         "symfony/orm-pack": "*",
         "symfony/process": "5.1.*",
         "symfony/security-bundle": "5.1.*",
+        "symfony/serializer": "5.1.*",
         "symfony/serializer-pack": "*",
         "symfony/string": "5.1.*",
         "symfony/translation": "5.1.*",
