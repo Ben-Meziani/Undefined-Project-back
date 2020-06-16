@@ -51,11 +51,6 @@ class User
      */
     private $updated_at;
 
-     /**
-     * @ORM\Column(type="json")
-     */
-    private $roles = [];
-
 
     public function getId(): ?int
     {
@@ -134,23 +129,4 @@ class User
         return $this;
     }
 
-    /**
-     * Get the value of roles
-     */ 
-    public function getRoles()
-    {
-        return $this->roles;
-    }
-
-    /**
-     * Set the value of roles
-     *
-     * @return  self
-     */ 
-    public function setRoles($roles)
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
 }
