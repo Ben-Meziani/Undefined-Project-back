@@ -20,6 +20,7 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
 use Symfony\Component\Security\Guard\PasswordAuthenticatedInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
+
 class LoginAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
 {
     use TargetPathTrait;
@@ -49,6 +50,8 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
     {
         
         $data = json_decode($request->getContent(), true);
+
+        //$serializer->deserialize($request->getContent(), User::class ,'jsons' );
         $credentials = [
             'email' => $data['email'],
             'password' => $data['password'],
