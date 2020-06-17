@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -20,6 +21,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Email(message = "The email is not a valid email.")
      */
     private $email;
 
@@ -31,12 +33,16 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Password can not be blank.")
+     * @Assert\Regex(pattern="/^(?=.*[a-z])(?=.*\d).{6,}$/i",
+     *  message="Password is required to be minimum 6 chars in length and to include at least one letter and one number.")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    
     private $pseudo;
 
     /**
