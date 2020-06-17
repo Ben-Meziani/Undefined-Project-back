@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -27,25 +28,27 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register", name="app_registration", methods={"POST"})
      */
-    public function register(Request $request, SerializerInterface $serializer, EntityManagerInterface $em)
+    public function register(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
     {
-        $jsonRecu = $request->getContent();
-
-        $post = $serializer->deserialize($jsonRecu, User::class, 'json');
         $user = new User();
+        $json = $request->getContent();
+
+        $user = $serializer->deserialize($json, User::class, 'json');
+       
+        $user->setPassword($this->passwordEncoder->encodePassword(
+            $user,
+            $user->getPassword()
+        ));
+        
+        $error = $validator->validate($user);
+        if (count($error) > 0) {
+            return $this->json($error, 400);
+        }
+        $em->persist($user);
+        $em->flush();
         // ...
 
-        $user->setPassword($this->passwordEncoder->encodePassword(
-            $post,
-            'password'
-        ));
-        $em->
-        //$mdp = $post->getPassword();
-        //on encrypte le mdp
-        //$post->setPassword(le mdp encrypter)
-
-        //persist et flush  
-        // $em->persist($post);
-        // $em->flush();
+       
+        return $this->json(200);
     }
 }
