@@ -40,6 +40,7 @@ class RegistrationController extends AbstractController
             $user->getPassword()
         ));
         
+
         $error = $validator->validate($user);
         if (count($error) > 0) {
             return $this->json($error, 400);
@@ -50,5 +51,6 @@ class RegistrationController extends AbstractController
 
        
         return $this->json(200);
+
     }
 }
