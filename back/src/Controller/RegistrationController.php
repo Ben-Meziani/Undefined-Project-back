@@ -39,7 +39,7 @@ class RegistrationController extends AbstractController
             $post,
             'password'
         ));
-        $em->
+        
         //$mdp = $post->getPassword();
         //on encrypte le mdp
         //$post->setPassword(le mdp encrypter)
