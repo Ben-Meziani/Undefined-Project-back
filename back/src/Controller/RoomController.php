@@ -37,30 +37,29 @@ class RoomController extends AbstractController
     }
 
     /**
-       *  @Route("/{id}/edit", name="room_edit", methods={"GET","POST"})
-       */
+     *  @Route("/{id}/edit", name="room_edit", methods={"GET|POST"})
+     */
     public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
     {
+        $room = null;
         $json = $request->getContent();
         if (!$json) {
-            //recup room et renvoie
-            $room = $this->getDoctrine()->getRepository(Room::class)->find($id);
+             //recup room et renvoie
+             $room = $this->getDoctrine()->getRepository(Room::class)->find($id);
             return $this->json($room, 200);
-        } else {
+        } else 
+        {
             //patch les données
+            $error = $validator->validate($room);//<--- ici j'apelle validate avec $room qui est null mais qui ne plantera pas car $room existe
+            if (count($error) > 0) {
+                return $this->json($error, 400);
+            }
+            $this->getDoctrine()->getManager()->flush();
         }
-
-
-        $error = $validator->validate($room);
-        if (count($error) > 0) {
-            return $this->json($error, 400);
-        }
-        $this->getDoctrine()->getManager()->flush();
-        $em->persist($room);
     }
     /**
-      * @Route("/{id}/delete", name="delete_room", requirements={"id" = "\d+"}, methods={"DELETE"})
-      */
+     * @Route("/{id}/delete", name="delete_room", requirements={"id" = "\d+"}, methods={"DELETE"})
+     */
     public function delete($id, Request $request)
     {
         $room = $this->getDoctrine()->getRepository(Room::class)->find($id);

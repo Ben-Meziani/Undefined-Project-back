@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\RoomRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=RoomRepository::class)
@@ -25,7 +26,7 @@ class Room
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $category;
+    private $theme;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -74,14 +75,14 @@ class Room
         return $this;
     }
 
-    public function getCategory(): ?string
+    public function getTheme(): ?string
     {
-        return $this->category;
+        return $this->theme;
     }
 
-    public function setCategory(string $category): self
+    public function setTheme(string $theme): self
     {
-        $this->category = $category;
+        $this->theme = $theme;
 
         return $this;
     }

@@ -41,7 +41,7 @@ class UserController extends AbstractController
         return $this->json(200);
     }
     /**
-     *  @Route("/{id}/edit", name="user_edit", methods={"GET","POST"})
+     *  @Route("/{id}/edit", name="user_edit", methods={"GET|POST"})
      */
     public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
     {
