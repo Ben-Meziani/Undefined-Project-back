@@ -16,20 +16,18 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class UserController extends AbstractController
 {
 
-    /**
-     * @Route("/new", name="user_new", methods={"POST"})
-     */
+    
     public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
     {
         $user = new User();
         $json = $request->getContent();
 
         $user = $serializer->deserialize($json, User::class, 'json');
-       
+
         $user->setPassword($this->passwordEncoder->encodePassword(
             $user->getPassword()
         ));
-        
+
 
         $error = $validator->validate($user);
         if (count($error) > 0) {
@@ -39,9 +37,8 @@ class UserController extends AbstractController
         $em->flush();
         // ...
 
-       
-        return $this->json(200);
 
+        return $this->json(200);
     }
     /**
      *  @Route("/{id}/edit", name="user_edit", methods={"GET","POST"})
@@ -53,25 +50,23 @@ class UserController extends AbstractController
             //recup user et renvoie
             $user = $this->getDoctrine()->getRepository(User::class)->find($id);
             return $this->json($user, 200);
-          }
-          
-          else {
+        } else {
             //patch les donée
-          }
-        
+        }
+
         dd($user);
         $user->setPassword($this->passwordEncoder->encodePassword(
             $user,
             $user->getPassword()
         ));
-        
+
 
         $error = $validator->validate($user);
         if (count($error) > 0) {
             return $this->json($error, 400);
         }
-        $this->getDoctrine()->getManager()->flush(); $em->persist($user);
-
+        $this->getDoctrine()->getManager()->flush();
+        $em->persist($user);
     }
 
     /**
@@ -80,17 +75,14 @@ class UserController extends AbstractController
     public function delete($id, Request $request)
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
-        
-        if ($user) 
-       {$this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token')); 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->remove($user);
-        $manager->flush();
-       return $this->json(200);
-         }
-        return $this->json(404);
-    
-    }
-   
 
+        if ($user) {
+            $this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'));
+            $manager = $this->getDoctrine()->getManager();
+            $manager->remove($user);
+            $manager->flush();
+            return $this->json(200);
+        }
+        return $this->json(404);
+    }
 }
