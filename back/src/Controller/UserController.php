@@ -77,18 +77,18 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}/delete", name="delete", requirements={"id" = "\d+"}, methods={"DELETE"})
      */
-    public function delete($id)
+    public function delete($id, Request $request)
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         
-        if (!$user) 
-       {
-         return $this->json(404);
-         }
+        if ($user) 
+       {$this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token')); 
         $manager = $this->getDoctrine()->getManager();
         $manager->remove($user);
         $manager->flush();
        return $this->json(200);
+         }
+        return $this->json(404);
     
     }
    
