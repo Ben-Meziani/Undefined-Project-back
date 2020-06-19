@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,33 +19,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends AbstractController
 {
 
-      /**
-     * @Route("/new", name="user_new", methods={"POST"})
-     */
-    public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
-    {
-        $user = new User();
-        $json = $request->getContent();
-
-        $user = $serializer->deserialize($json, User::class, 'json');
-
-        $user->setPassword($this->passwordEncoder->encodePassword(
-            $user,
-            $user->getPassword()
-        ));
-
-
-        $error = $validator->validate($user);
-        if (count($error) > 0) {
-            return $this->json($error, 400);
-        }
-        $em->persist($user);
-        $em->flush();
-        // ...
-
-
-        return $this->json(200);
-    }
+   
     /**
      *  @Route("/{id}/edit", name="user_edit", methods={"GET|POST"})
      */
@@ -62,10 +37,12 @@ class UserController extends AbstractController
             if (count($error) > 0) {
                 return $this->json($error, 400);
             }
+            //dd($user);
+            $serializer->deserialize($json, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
+            $user->setUpdatedAt(new DateTime());
 
-            $serializer->deserialize($json, Room::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
             $this->getDoctrine()->getManager()->flush();
-            
+            return $this->json(200);
         }
     }
 
