@@ -42,19 +42,12 @@ class RoomController extends AbstractController
      */
     public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
     {
-<<<<<<< HEAD
-       $room = $this->getDoctrine()->getRepository(Room::class)->find($id);
-=======
         $room = $this->getDoctrine()->getRepository(Room::class)->find($id);
->>>>>>> 18d3ce49f28db2d78df6a75ca5a2fa1d1ab63fd2
         $json = $request->getContent();
         
         if (!$json) {
              //recup room et renvoie
-<<<<<<< HEAD
              
-=======
->>>>>>> 18d3ce49f28db2d78df6a75ca5a2fa1d1ab63fd2
             return $this->json($room, 200);
         } else 
         {
