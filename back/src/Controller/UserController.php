@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/user")
@@ -28,6 +29,7 @@ class UserController extends AbstractController
         $user = $serializer->deserialize($json, User::class, 'json');
 
         $user->setPassword($this->passwordEncoder->encodePassword(
+            $user,
             $user->getPassword()
         ));
 

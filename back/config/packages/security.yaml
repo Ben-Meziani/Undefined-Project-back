@@ -48,9 +48,5 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-         - { path: ^/user, roles: ROLE_USER }
-         - { path: ^/room, roles: ROLE_USER }
-         - { path: ^/dice, roles: ROLE_USER }
+         
