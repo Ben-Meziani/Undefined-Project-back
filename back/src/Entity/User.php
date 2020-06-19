@@ -3,12 +3,29 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups"={"user:read"}},
+ *      denormalizationContext={"groups"={"user:write"}},
+ *   collectionOperations={
+ *      "get"={},
+ *      "post"={}, 
+ * },
+ *    itemOperations={
+ *      "get"={},
+ *      "put"={},
+ *      "delete"={},
+ *      "patch"={},
+ * 
+ * }
+ * )
  */
 class User implements UserInterface
 {
@@ -16,12 +33,14 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"user:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\Email(message = "The email is not a valid email.")
+     * @Groups({"user:read", "user:write"})
      */
     private $email;
 
@@ -36,11 +55,13 @@ class User implements UserInterface
      * @Assert\NotBlank(message="Password can not be blank.")
      * @Assert\Regex(pattern="/^(?=.*[a-z])(?=.*\d).{6,}$/i",
      *  message="Password is required to be minimum 6 chars in length and to include at least one letter and one number.")
+     *@Groups({"user:read", "user:write"})
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user:write"})
      */
     
     private $pseudo;

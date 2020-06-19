@@ -2,11 +2,28 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PseudoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PseudoRepository::class)
+ * @ApiResource(
+ *      normalizationContext={"groups"={"pseudo:read"}},
+ *      denormalizationContext={"groups"={"pseudo:write"}},
+ *   collectionOperations={
+ *      "get"={},
+ *      "post"={}, 
+ * },
+ *    itemOperations={
+ *      "get"={},
+ *      "put"={},
+ *      "delete"={},
+ *      "patch"={},
+ * 
+ * }
+ * )
  */
 class Pseudo
 {
