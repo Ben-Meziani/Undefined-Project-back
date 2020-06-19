@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 /**
  * @Route("/user")
@@ -47,28 +48,23 @@ class UserController extends AbstractController
      */
     public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
     {
+        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         $json = $request->getContent();
         if (!$json) {
             //recup user et renvoie
-            $user = $this->getDoctrine()->getRepository(User::class)->find($id);
             return $this->json($user, 200);
         } else {
             //patch les donée
+
+            $error = $validator->validate($user);
+            if (count($error) > 0) {
+                return $this->json($error, 400);
+            }
+
+            $serializer->deserialize($json, Room::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
+            $this->getDoctrine()->getManager()->flush();
+            
         }
-
-        dd($user);
-        $user->setPassword($this->passwordEncoder->encodePassword(
-            $user,
-            $user->getPassword()
-        ));
-
-
-        $error = $validator->validate($user);
-        if (count($error) > 0) {
-            return $this->json($error, 400);
-        }
-        $this->getDoctrine()->getManager()->flush();
-        $em->persist($user);
     }
 
     /**
