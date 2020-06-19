@@ -9,3 +9,5 @@ nelmio_cors:
     paths:
         '^/logout':
             allow_credentials: true
+        '^/login':
+            allow_credentials: true

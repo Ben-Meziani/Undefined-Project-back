@@ -55,7 +55,7 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
         $credentials = [
             'email' => $data['email'],
             'password' => $data['password'],
-            'csrf_token' => $request->request->get('_csrf_token'),
+            
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
