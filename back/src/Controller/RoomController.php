@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 /**
  * @Route("/room", name="room")
@@ -39,13 +40,13 @@ class RoomController extends AbstractController
     /**
      *  @Route("/{id}/edit", name="room_edit", methods={"GET|POST"})
      */
-    public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
+    public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
     {
-        $room = null;
+        $room = $this->getDoctrine()->getRepository(Room::class)->find($id);
         $json = $request->getContent();
+        
         if (!$json) {
              //recup room et renvoie
-             $room = $this->getDoctrine()->getRepository(Room::class)->find($id);
             return $this->json($room, 200);
         } else 
         {
@@ -54,7 +55,11 @@ class RoomController extends AbstractController
             if (count($error) > 0) {
                 return $this->json($error, 400);
             }
-            $this->getDoctrine()->getManager()->flush();
+
+            $serializer->deserialize($json, Room::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $room]);
+            $manager = $this->getDoctrine()->getManager();
+            $manager->flush();
+            return $this->json(200);
         }
     }
     /**
