@@ -24,7 +24,7 @@ class RoomController extends AbstractController
     {
         $room = new Room;
         $json = $request->getContent();
-
+        
         $room = $serializer->deserialize($json, Room::class, 'json');
         $error = $validator->validate($room);
         if (count($error) > 0) {
