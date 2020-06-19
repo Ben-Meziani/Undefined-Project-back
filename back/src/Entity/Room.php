@@ -2,29 +2,11 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=RoomRepository::class)
- * @ApiResource(
- *      normalizationContext={"groups"={"room:read"}},
- *      denormalizationContext={"groups"={"room:write"}},
- *   collectionOperations={
- *      "get"={},
- *      "post"={}, 
- * },
- *    itemOperations={
- *      "get"={},
- *      "put"={},
- *      "delete"={},
- *      "patch"={},
- * 
- * }
- * )
  */
 class Room
 {
@@ -37,25 +19,21 @@ class Room
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"room:read", "room:write"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"room:read", "room:write"})
      */
-    private $theme;
+    private $category;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"room:read", "room:write"})
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $player;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"room:read", "room:write"})
      */
     private $gameMaster;
 
@@ -66,7 +44,6 @@ class Room
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"room:read", "room:write"})
      */
     private $playerNumber;
 
@@ -97,14 +74,14 @@ class Room
         return $this;
     }
 
-    public function getTheme(): ?string
+    public function getCategory(): ?string
     {
-        return $this->theme;
+        return $this->category;
     }
 
-    public function setTheme(string $theme): self
+    public function setCategory(string $category): self
     {
-        $this->theme = $theme;
+        $this->category = $category;
 
         return $this;
     }
