@@ -18,7 +18,7 @@ class UserController extends AbstractController
 {
 
       /**
-     * @Route("/new", name="room_new", methods={"POST"})
+     * @Route("/new", name="user_new", methods={"POST"})
      */
     public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
     {
