@@ -27,8 +27,9 @@ class UserController extends AbstractController
     private function checkToken(JWTEncoderInterface $jwtEncoder, $request, $user)
     {
         $token = $request->headers->get('authorization');
-        //dd($token);
-        $token_decoded = $jwtEncoder->decode($token);
+        $token_trim = explode(' ', $token)[1];
+        //dd($token_trim, $token);
+        $token_decoded = $jwtEncoder->decode($token_trim);
         if ($user->getEmail() == $token_decoded["username"]) {
             return true;
         }
