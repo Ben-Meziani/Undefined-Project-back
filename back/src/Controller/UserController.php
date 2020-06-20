@@ -20,19 +20,33 @@ use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 class UserController extends AbstractController
 {
     /**
+     * check if the user can acces data
+     *
+     * @return boolean
+     */
+    private function checkToken(JWTEncoderInterface $jwtEncoder, $request, $user)
+    {
+        $token = $request->headers->get('authorization');
+        $token_decoded = $jwtEncoder->decode($token);
+        if ($user->getEmail() == $token_decoded["username"]) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
      * @Route("/{id}", name="user_show", methods={"GET"})
      */
     public function show(User $user, Request $request, JWTEncoderInterface $jwtEncoder)
-    {
-        $token = $request->headers->get('authorization');
-        
-        $token_decoded = $jwtEncoder->decode($token);
-        
-        if ($user->getEmail() == $token_decoded["username"]) {
+    {   
+        //dd($this->checkToken($jwtEncoder, $request, $user));
+        if ($this->checkToken($jwtEncoder, $request, $user)) {
             return $this->json($user, 200);
         }
         else {
-            return $this->json(403);
+            return $this->json('token invalid', 403);
         }
     }
    
