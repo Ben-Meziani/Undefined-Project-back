@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Room;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,12 +24,13 @@ class RoomController extends AbstractController
     {
         $room = new Room;
         $json = $request->getContent();
-
+        
         $room = $serializer->deserialize($json, Room::class, 'json');
         $error = $validator->validate($room);
         if (count($error) > 0) {
             return $this->json($error, 400);
         }
+        $room->setCreatedAt(new DateTime());
         $em->persist($room);
         $em->flush();
         // ...
@@ -58,6 +60,7 @@ class RoomController extends AbstractController
             }
 
             $serializer->deserialize($json, Room::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $room]);
+            $room->setUpdatedAt(new DateTime());
             $manager = $this->getDoctrine()->getManager();
             $manager->flush();
             return $this->json(200);
