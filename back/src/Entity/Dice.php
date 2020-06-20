@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DiceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,6 +38,22 @@ class Dice
      * @ORM\Column(type="datetime")
      */
     private $created_at;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Room::class, inversedBy="dices")
+     */
+    private $room_id;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="dices")
+     */
+    private $user_id;
+
+    public function __construct()
+    {
+        $this->room_id = new ArrayCollection();
+        $this->user_id = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -86,6 +104,58 @@ class Dice
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Room[]
+     */
+    public function getRoomId(): Collection
+    {
+        return $this->room_id;
+    }
+
+    public function addRoomId(Room $roomId): self
+    {
+        if (!$this->room_id->contains($roomId)) {
+            $this->room_id[] = $roomId;
+        }
+
+        return $this;
+    }
+
+    public function removeRoomId(Room $roomId): self
+    {
+        if ($this->room_id->contains($roomId)) {
+            $this->room_id->removeElement($roomId);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUserId(): Collection
+    {
+        return $this->user_id;
+    }
+
+    public function addUserId(User $userId): self
+    {
+        if (!$this->user_id->contains($userId)) {
+            $this->user_id[] = $userId;
+        }
+
+        return $this;
+    }
+
+    public function removeUserId(User $userId): self
+    {
+        if ($this->user_id->contains($userId)) {
+            $this->user_id->removeElement($userId);
+        }
 
         return $this;
     }

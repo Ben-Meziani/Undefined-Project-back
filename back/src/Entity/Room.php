@@ -65,9 +65,15 @@ class Room
      */
     private $pseudos;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Dice::class, mappedBy="room_id")
+     */
+    private $dices;
+
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
+        $this->dices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -194,6 +200,34 @@ class Room
         if ($this->pseudos->contains($pseudo)) {
             $this->pseudos->removeElement($pseudo);
             $pseudo->removeRoomId($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Dice[]
+     */
+    public function getDices(): Collection
+    {
+        return $this->dices;
+    }
+
+    public function addDice(Dice $dice): self
+    {
+        if (!$this->dices->contains($dice)) {
+            $this->dices[] = $dice;
+            $dice->addRoomId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDice(Dice $dice): self
+    {
+        if ($this->dices->contains($dice)) {
+            $this->dices->removeElement($dice);
+            $dice->removeRoomId($this);
         }
 
         return $this;

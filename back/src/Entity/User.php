@@ -67,9 +67,15 @@ class User implements UserInterface
      */
     private $pseudos;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Dice::class, mappedBy="user_id")
+     */
+    private $dices;
+
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
+        $this->dices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -221,6 +227,34 @@ class User implements UserInterface
         if ($this->pseudos->contains($pseudo)) {
             $this->pseudos->removeElement($pseudo);
             $pseudo->removeUserId($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Dice[]
+     */
+    public function getDices(): Collection
+    {
+        return $this->dices;
+    }
+
+    public function addDice(Dice $dice): self
+    {
+        if (!$this->dices->contains($dice)) {
+            $this->dices[] = $dice;
+            $dice->addUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDice(Dice $dice): self
+    {
+        if ($this->dices->contains($dice)) {
+            $this->dices->removeElement($dice);
+            $dice->removeUserId($this);
         }
 
         return $this;
