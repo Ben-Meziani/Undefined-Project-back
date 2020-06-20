@@ -25,10 +25,14 @@ class SecurityController extends AbstractController
         
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-        //dd($error);
-        //if (count($error) > 0) {
-            return $this->json(200);
-        //}
+        //dd(empty($error));
+        if (empty($error)) {
+            return $this->json($lastUsername, 200);
+        }
+        else {
+            return $this->json($error, 401);
+        }
+        
     }
 
     /**

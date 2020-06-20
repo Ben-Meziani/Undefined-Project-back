@@ -12,19 +12,36 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 
 /**
  * @Route("/user")
  */
 class UserController extends AbstractController
 {
-
+    /**
+     * @Route("/{id}", name="user_show", methods={"GET"})
+     */
+    public function show(User $user, Request $request, JWTEncoderInterface $jwtEncoder)
+    {
+        $token = $request->headers->get('authorization');
+        
+        $token_decoded = $jwtEncoder->decode($token);
+        
+        if ($user->getEmail() == $token_decoded["username"]) {
+            return $this->json($user, 200);
+        }
+        else {
+            return $this->json(403);
+        }
+    }
    
     /**
      *  @Route("/{id}/edit", name="user_edit", methods={"GET|POST"})
      */
     public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
     {
+        
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         $json = $request->getContent();
         if (!$json) {
