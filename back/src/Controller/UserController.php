@@ -27,6 +27,7 @@ class UserController extends AbstractController
     private function checkToken(JWTEncoderInterface $jwtEncoder, $request, $user)
     {
         $token = $request->headers->get('authorization');
+        //dd($token);
         $token_decoded = $jwtEncoder->decode($token);
         if ($user->getEmail() == $token_decoded["username"]) {
             return true;
@@ -53,10 +54,14 @@ class UserController extends AbstractController
     /**
      *  @Route("/{id}/edit", name="user_edit", methods={"GET|POST"})
      */
-    public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em)
+    public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em, JWTEncoderInterface $jwtEncoder)
     {
         
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+        if (!$this->checkToken($jwtEncoder, $request, $user)) {
+            return $this->json('invalid token', 403);
+        }
+
         $json = $request->getContent();
         if (!$json) {
             //recup user et renvoie

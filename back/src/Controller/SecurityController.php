@@ -23,11 +23,10 @@ class SecurityController extends AbstractController
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
+        
         //dd(empty($error));
         if (empty($error)) {
-            return $this->json($lastUsername, 200);
+            return $this->json(200);
         }
         else {
             return $this->json($error, 401);
