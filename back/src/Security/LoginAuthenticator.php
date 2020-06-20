@@ -50,12 +50,12 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
     {
         
         $data = json_decode($request->getContent(), true);
-
+        
         //$serializer->deserialize($request->getContent(), User::class ,'jsons' );
         $credentials = [
             'email' => $data['email'],
             'password' => $data['password'],
-            //'csrf_token' => $request['_csrf_token'],
+            
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
@@ -67,11 +67,11 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        //no csrf token for the moment
-        //$token = new CsrfToken('authenticate', $credentials['csrf_token']);
-        //if (!$this->csrfTokenManager->isTokenValid($token)) {
-        //    throw new InvalidCsrfTokenException();
-        //}
+        
+        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
+        if (!$this->csrfTokenManager->isTokenValid($token)) {
+            throw new InvalidCsrfTokenException();
+        }
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
 

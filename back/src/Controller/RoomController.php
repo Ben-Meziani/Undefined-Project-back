@@ -47,6 +47,7 @@ class RoomController extends AbstractController
         
         if (!$json) {
              //recup room et renvoie
+             
             return $this->json($room, 200);
         } else 
         {
