@@ -11,11 +11,20 @@
 <div class="example-wrapper">
     <h1>Welcome to Undefined Role Play !</h1>
 
-    Active routes
+    Active routes :
     <ul>
-        <li>/login : renvoie le token</li>
+        <li>/login : code 200 -> OK</li>
+        <li>/login_check : send the token</li>
         <li>/logout : OK</li>
-        <li>/register : OK (expected : email, password, pseudo, created_at)</li>
+        <li>/register : OK (expected : email, password, pseudo)</li>
+        <li>/user/id: return user</li>
+        <li>/user/id/delete: duh!</li>
+        <li>/user/id/edit: edit user</li>
+        <li>/room/id/delete: duh!</li>
+        <li>/room/add: expected : name, theme, game_master, player_number</li>
     </ul>
+
+    All routes exept /login & /register must have in the header the Authentification token like Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1OTI2NzMzMDYsImV4cCI6MTU5MjY3NjkwNiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoidGVzdEBvY2xvY2suaW8ifQ.UhZRG5CisxTO0o0f7rBjO7triMpuPSMYQyhkMpxwTx4eYzkr4qJVVkM3_OXBe3TSJYldZPm1NmhXQ-HjrxufFyZawvrtPQEOSemTol1kUK0imFGucdgLJA2bXtEChTE0fJU17k1OTFlSN_RnxPvH3eYwGOYNUeb7-b6X8bW7BizuV4Xh4MCoM0fjM_IdcVO_NoSwmtBieRMgAm1rkarTt0gPfWEfjJdJgc85Aptf6G0-s81M-yBsEqEOzlNlw92l8KhlEas68m0r9Wm5YR-Xxho9gTks1sefwwfhqTrXDCdNZkYMskxoXutdtoQ-Qzo5SUyONpjzmdQUWlbC_SYW-QAsmAY9qy_34jr4cMIfMqiQY3nIDLfrcXuspA0rVcz42w0IhDlY4DHILpqTCGtgnkEqQVd1ZrINFyFs8KY1D7NpQlE-VCqL_EJzkB97m6I4JuhVPgcFUTlkR8KlQcgMyjTpwpsPtfLbhR6GlX2EOFGntNzNAdtUm72U-0j5XpMuTXDaMYeqsl_kyK8B5hzTUMGYPNJVo-AlKHTeR2q5E1dkT_eWHKmCAitttxhM3g-R-_6wZTcrVTA2J5XW4Hv8MdJu5Zh67KtNLLy52E4N-cktXt0Ir38_xhT6bfVegX4gCe5UIZatGz4kFrIMgAMz6IPIhthpGK14gPSC6psXfH4
+
 </div>
 {% endblock %}
