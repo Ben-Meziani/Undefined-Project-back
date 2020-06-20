@@ -86,9 +86,13 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}/delete", name="delete", requirements={"id" = "\d+"}, methods={"DELETE"})
      */
-    public function delete($id, Request $request)
+    public function delete($id, Request $request, JWTEncoderInterface $jwtEncoder)
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+
+        if (!$this->checkToken($jwtEncoder, $request, $user)) {
+            return $this->json('invalid token', 403);
+        }
 
         if ($user) {
             $this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'));
