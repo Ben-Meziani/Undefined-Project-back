@@ -28,6 +28,7 @@ class UserController extends AbstractController
         $user = $serializer->deserialize($json, User::class, 'json');
 
         $user->setPassword($this->passwordEncoder->encodePassword(
+            $user,
             $user->getPassword()
         ));
 
