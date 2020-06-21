@@ -23,22 +23,26 @@ security:
             anonymous: true
            
             json_login:
-                check_path: /login
+                check_path: /login_check
                 username_path: email
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-        main:
+        register:
+            pattern: ^/register
+            stateless: true
             anonymous: true
-            lazy: true
-            provider: app_user_provider
-
+        
+        main:
+            pattern:   ^/
+            anonymous: false
+            stateless: true
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
             logout:
                 path: app_logout
                 # where to redirect after logout
-                # target: app_any_route
+                target: app_logout_confirm
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
@@ -48,9 +52,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+         - { path: ^/room, roles: IS_AUTHENTICATED_FULLY }
+         - { path: ^/user, roles: IS_AUTHENTICATED_FULLY }
          - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-         - { path: ^/user, roles: ROLE_USER }
-         - { path: ^/room, roles: ROLE_USER }
-         - { path: ^/dice, roles: ROLE_USER }
+         

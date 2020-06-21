@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -28,7 +30,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="json")
      */
-    private $roles = [];
+    private $roles = ['ROLE_USER'];
 
     /**
      * @var string The hashed password
@@ -59,6 +61,22 @@ class User implements UserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updated_at;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Pseudo::class, mappedBy="user_id")
+     */
+    private $pseudos;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Dice::class, mappedBy="user_id")
+     */
+    private $dices;
+
+    public function __construct()
+    {
+        $this->pseudos = new ArrayCollection();
+        $this->dices = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -182,6 +200,62 @@ class User implements UserInterface
     public function setUpdatedAt(?\DateTimeInterface $updated_at): self
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Pseudo[]
+     */
+    public function getPseudos(): Collection
+    {
+        return $this->pseudos;
+    }
+
+    public function addPseudo(Pseudo $pseudo): self
+    {
+        if (!$this->pseudos->contains($pseudo)) {
+            $this->pseudos[] = $pseudo;
+            $pseudo->addUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePseudo(Pseudo $pseudo): self
+    {
+        if ($this->pseudos->contains($pseudo)) {
+            $this->pseudos->removeElement($pseudo);
+            $pseudo->removeUserId($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Dice[]
+     */
+    public function getDices(): Collection
+    {
+        return $this->dices;
+    }
+
+    public function addDice(Dice $dice): self
+    {
+        if (!$this->dices->contains($dice)) {
+            $this->dices[] = $dice;
+            $dice->addUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDice(Dice $dice): self
+    {
+        if ($this->dices->contains($dice)) {
+            $this->dices->removeElement($dice);
+            $dice->removeUserId($this);
+        }
 
         return $this;
     }

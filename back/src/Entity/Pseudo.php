@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\DiceRepository;
+use App\Repository\PseudoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=DiceRepository::class)
+ * @ORM\Entity(repositoryClass=PseudoRepository::class)
  */
-class Dice
+class Pseudo
 {
     /**
      * @ORM\Id()
@@ -20,19 +20,24 @@ class Dice
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $launch_by;
+    private $age;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $result;
+    private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $type;
+    private $firstname;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $note;
 
     /**
      * @ORM\Column(type="datetime")
@@ -40,12 +45,17 @@ class Dice
     private $created_at;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Room::class, inversedBy="dices")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated_at;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Room::class, inversedBy="pseudos")
      */
     private $room_id;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="dices")
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="pseudos")
      */
     private $user_id;
 
@@ -60,38 +70,50 @@ class Dice
         return $this->id;
     }
 
-    public function getLaunchBy(): ?string
+    public function getAge(): ?int
     {
-        return $this->launch_by;
+        return $this->age;
     }
 
-    public function setLaunchBy(string $launch_by): self
+    public function setAge(int $age): self
     {
-        $this->launch_by = $launch_by;
+        $this->age = $age;
 
         return $this;
     }
 
-    public function getResult(): ?string
+    public function getName(): ?string
     {
-        return $this->result;
+        return $this->name;
     }
 
-    public function setResult(string $result): self
+    public function setName(string $name): self
     {
-        $this->result = $result;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function getFirstname(): ?string
     {
-        return $this->type;
+        return $this->firstname;
     }
 
-    public function setType(string $type): self
+    public function setFirstname(string $firstname): self
     {
-        $this->type = $type;
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(string $note): self
+    {
+        $this->note = $note;
 
         return $this;
     }
@@ -104,6 +126,18 @@ class Dice
     public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
 
         return $this;
     }

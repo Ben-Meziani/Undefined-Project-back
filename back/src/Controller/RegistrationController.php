@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\PostRepository;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +40,8 @@ class RegistrationController extends AbstractController
             $user,
             $user->getPassword()
         ));
+
+        $user->setCreatedAt(new DateTime());
         
         $error = $validator->validate($user);
         if (count($error) > 0) {
@@ -49,6 +52,6 @@ class RegistrationController extends AbstractController
         // ...
 
        
-        return $this->json(200);
+        return $this->json($user, 200);
     }
 }

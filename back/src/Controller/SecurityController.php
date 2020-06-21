@@ -23,12 +23,15 @@ class SecurityController extends AbstractController
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-        //dd($error);
-        //if (count($error) > 0) {
+        
+        //dd(empty($error));
+        if (empty($error)) {
             return $this->json(200);
-        //}
+        }
+        else {
+            return $this->json($error, 401);
+        }
+        
     }
 
     /**
@@ -36,6 +39,14 @@ class SecurityController extends AbstractController
      */
     public function logout()
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        
+    }
+
+    /**
+     * @Route("/logout/confirm", name="app_logout_confirm")
+     */
+    public function confirmLogout()
+    {
+        return $this->json(200);
     }
 }
