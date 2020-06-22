@@ -26,29 +26,12 @@ class UserController extends AbstractController
      */
     private function checkToken(JWTEncoderInterface $jwtEncoder, $request, $user)
     {
-<<<<<<< HEAD
-        $user = new User();
-        $json = $request->getContent();
-
-        $user = $serializer->deserialize($json, User::class, 'json');
-
-        $user->setPassword($this->passwordEncoder->encodePassword(
-            $user,
-            $user->getPassword()
-        ));
-
-
-        $error = $validator->validate($user);
-        if (count($error) > 0) {
-            return $this->json($error, 400);
-=======
         $token = $request->headers->get('authorization');
         $token_trim = explode(' ', $token)[1];
         //dd($token_trim, $token);
         $token_decoded = $jwtEncoder->decode($token_trim);
         if ($user->getEmail() == $token_decoded["username"]) {
             return true;
->>>>>>> 0f3e1b83e79e2231955e048f704f6c50b44fe0af
         }
         else {
             return false;
