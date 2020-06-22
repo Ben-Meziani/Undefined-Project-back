@@ -19,6 +19,7 @@ class Room
      */
     private $id;
 
+
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -231,4 +232,5 @@ class Room
 
         return $this;
     }
+
 }
