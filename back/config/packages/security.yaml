@@ -39,7 +39,7 @@ security:
             provider: app_user_provider
             guard:
                 authenticators:
-                    - app.jwt_token_authenticator
+                    - lexik_jwt_authentication.jwt_token_authenticator
             
             logout:
                 path: app_logout
