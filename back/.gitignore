@@ -20,4 +20,4 @@
 ###< lexik/jwt-authentication-bundle ###
 
 ### uploaded files ###
-/public/uploads/
+/public/uploads/*
