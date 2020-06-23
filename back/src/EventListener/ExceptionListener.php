@@ -10,6 +10,6 @@ class ExceptionListener
     {
         $user = $event->getUser();
         //dd($user->getId());
-        $event->setData(['id'=>$user->getId(),'pseudo'=>$user->getPseudo(),'email'=>$user->getEmail()]);
+        $event->setData(['id'=>$user->getId(),'pseudo'=>$user->getPseudo(),'email'=>$user->getEmail(), 'icon'=>$user->getIcon()]);
     }
 }
