@@ -112,22 +112,28 @@ class UserController extends AbstractController
     public function uploadImageRoom(Request $request, User $user,JWTEncoderInterface $jwtEncoder)
     {
         if ($this->checkToken($jwtEncoder, $request, $user)) {
-            if ($request->isMethod('POST')) {
-                $file = $request->files->get('post');
+            $fileExt = $request->files->get('post')->getClientOriginalExtension();
+            if ($fileExt == 'jpg' || $fileExt == 'png') {
+                if ($request->isMethod('POST')) {
+                    $file = $request->files->get('post');
 
-                if ($file) {
-                    $fileName = uniqid() . '.' . $file->guessExtension();
+                    if ($file) {
+                        $fileName = uniqid() . '.' . $file->guessExtension();
 
-                    $file->move($this->getParameter('icon_directory'), $fileName);
+                        $file->move($this->getParameter('icon_directory'), $fileName);
 
-                    $user->setIcon($fileName);
+                        $user->setIcon($fileName);
+                    }
+
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->flush();
+                    return $this->json($user->getIcon(), 200);
                 }
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->flush();
-                return $this->json($user->getIcon(), 200);
+                return $this->json($user, 200);
             }
-            return $this->json($user, 200);
+            else {
+                return $this->json('format fichier incorect (jpg/png only)', 401);
+            }
         }
         else {
             return $this->json(403);
