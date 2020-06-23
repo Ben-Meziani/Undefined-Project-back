@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\PostRepository;
 use DateTime;
+use App\Service\MailerService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +25,7 @@ class RegistrationController extends AbstractController
          {
              $this->passwordEncoder = $passwordEncoder;
          }
-    
+ 
 
     /**
      * @Route("/register", name="app_registration", methods={"POST"})
@@ -47,11 +48,12 @@ class RegistrationController extends AbstractController
         if (count($error) > 0) {
             return $this->json($error, 400);
         }
+
         $em->persist($user);
         $em->flush();
-        // ...
-
-       
+     
         return $this->json($user, 200);
     }
+    
+
 }

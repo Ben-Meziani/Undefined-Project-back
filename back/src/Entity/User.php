@@ -72,6 +72,11 @@ class User implements UserInterface
      */
     private $dices;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $activation_token;
+
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
@@ -256,6 +261,18 @@ class User implements UserInterface
             $this->dices->removeElement($dice);
             $dice->removeUserId($this);
         }
+
+        return $this;
+    }
+
+    public function getActivationToken(): ?string
+    {
+        return $this->activation_token;
+    }
+
+    public function setActivationToken(?string $activation_token): self
+    {
+        $this->activation_token = $activation_token;
 
         return $this;
     }
