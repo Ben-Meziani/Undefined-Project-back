@@ -29,6 +29,7 @@ class DiceController extends AbstractController
         return $this->json($resultat, 200);
     }
 
+    //call to the api for the result of the dice
     private function apiDice($dice, $launch)
     {
         $resultat =  file_get_contents("https://www.dejete.com/api?nbde=$dice&tpde=$launch");
@@ -36,6 +37,7 @@ class DiceController extends AbstractController
         return $resultat;
     }
 
+    //save the launchs in the bdd
     private function save(User $user, $resultat, $diceType, $roomId) 
     {
         $resultatDecoded = json_decode($resultat);
