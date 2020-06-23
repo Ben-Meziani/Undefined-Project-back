@@ -29,7 +29,7 @@ class RoomController extends AbstractController
             if ($file) {
                 $fileName = uniqid() . '.' . $file->guessExtension();
 
-                $file->move($this->getParameter('upload_directory'), $fileName);
+                $file->move($this->getParameter('file_directory'), $fileName);
 
                 $room->setFiles($fileName);
             }
