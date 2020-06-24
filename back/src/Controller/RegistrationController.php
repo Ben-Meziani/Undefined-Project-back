@@ -33,20 +33,27 @@ class RegistrationController extends AbstractController
     {
         $user = new User();
         $json = $request->getContent();
-
+ 
         $user = $serializer->deserialize($json, User::class, 'json');
        
+        
+
+        $user->setCreatedAt(new DateTime());
+        
+        $errors = $validator->validate($user);
+        
+        if (count($errors) > 0) {
+            foreach ($errors as $error) {
+                $message[] = [$error->getMessage()];
+            }
+            return $this->json($message, 400);
+        }
+
         $user->setPassword($this->passwordEncoder->encodePassword(
             $user,
             $user->getPassword()
         ));
 
-        $user->setCreatedAt(new DateTime());
-        
-        $error = $validator->validate($user);
-        if (count($error) > 0) {
-            return $this->json($error, 400);
-        }
         $em->persist($user);
         $em->flush();
         // ...
