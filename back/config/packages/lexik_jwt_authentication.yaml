@@ -29,5 +29,5 @@ lexik_jwt_authentication:
     set_cookies:
         BEARER:
             lifetime: null 
-            samesite: 'http://localhost:8080/'
+            samesite: lax
     
