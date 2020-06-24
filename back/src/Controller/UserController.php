@@ -117,6 +117,7 @@ class UserController extends AbstractController
 
                 if ($file) {
                     $fileName = uniqid() . '.' . $file->guessExtension();
+                    $file->resize(400, 400);
 
                     $file->move($this->getParameter('icon_directory'), $fileName);
 
