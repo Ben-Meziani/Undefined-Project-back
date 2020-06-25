@@ -18,7 +18,7 @@ class Room
     
     /**
      * @var \Ramsey\Uuid\UuidInterface
-     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
@@ -88,6 +88,8 @@ class Room
     {
         $this->pseudos = new ArrayCollection();
         $this->dices = new ArrayCollection();
+        $min="1"; $max="1000";
+        $this->uuid = uniqid(random_int($min, $max));
     }
 
     public function getId(): ?int
@@ -268,7 +270,6 @@ class Room
     
     public function setUuid(\Ramsey\Uuid\UuidInterface $uuid)
     {
-        $this->uuid = $uuid;
 
         return $this;
     }
