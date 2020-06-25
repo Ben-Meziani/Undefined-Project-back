@@ -81,8 +81,11 @@
     "egulias/email-validator": {
         "version": "2.1.17"
     },
-    "imagine/imagine": {
-        "version": "1.2.3"
+    "guzzlehttp/psr7": {
+        "version": "1.6.1"
+    },
+    "intervention/image": {
+        "version": "2.5.1"
     },
     "lcobucci/jwt": {
         "version": "3.3.2"
@@ -97,19 +100,6 @@
         },
         "files": [
             "config/packages/lexik_jwt_authentication.yaml"
-        ]
-    },
-    "liip/imagine-bundle": {
-        "version": "1.8",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.8",
-            "ref": "5a5bdc2d0e2533ed6935d5ae562f2b318a8fc1ee"
-        },
-        "files": [
-            "config/packages/liip_imagine.yaml",
-            "config/routes/liip_imagine.yaml"
         ]
     },
     "monolog/monolog": {
@@ -160,11 +150,17 @@
     "psr/event-dispatcher": {
         "version": "1.0.0"
     },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/link": {
         "version": "1.0.0"
     },
     "psr/log": {
         "version": "1.1.3"
+    },
+    "ralouphie/getallheaders": {
+        "version": "3.0.3"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -480,9 +476,6 @@
     },
     "symfony/string": {
         "version": "v5.1.1"
-    },
-    "symfony/templating": {
-        "version": "v5.1.2"
     },
     "symfony/test-pack": {
         "version": "v1.0.6"

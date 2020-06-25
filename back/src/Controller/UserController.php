@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Intervention\Image\ImageManagerStatic as Image;
 
 /**
  * @Route("/user")
@@ -114,24 +115,26 @@ class UserController extends AbstractController
         if ($this->checkToken($jwtEncoder, $request, $user)) {
             if ($request->isMethod('POST')) {
                 $file = $request->files->get('post');
-
+                
                 if ($file) {
                     $fileName = uniqid() . '.' . $file->guessExtension();
-                    $file->resize(400, 400);
+                    
 
                     $file->move($this->getParameter('icon_directory'), $fileName);
-
+                    //dd($this->getParameter('icon_directory'));
+                    $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)->resize(400, 400)->save();
                     $user->setIcon($fileName);
                 }
-
+                
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->flush();
+                
                 return $this->json($user->getIcon(), 200);
             }
             return $this->json($user, 200);
         }
         else {
-            return $this->json(403);
+            return $this->json('invalid token', 403);
         }
     }
 }

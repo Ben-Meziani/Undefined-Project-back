@@ -14,5 +14,4 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Nelmio\CorsBundle\NelmioCorsBundle::class => ['all' => true],
     Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle::class => ['all' => true],
-    Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
 ];
