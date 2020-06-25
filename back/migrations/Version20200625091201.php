@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200620171427 extends AbstractMigration
+final class Version20200625091201 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -27,7 +27,7 @@ final class Version20200620171427 extends AbstractMigration
         $this->addSql('CREATE TABLE pseudo (id INT AUTO_INCREMENT NOT NULL, age INT DEFAULT NULL, name VARCHAR(255) NOT NULL, firstname VARCHAR(255) NOT NULL, note LONGTEXT NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE pseudo_room (pseudo_id INT NOT NULL, room_id INT NOT NULL, INDEX IDX_155C857F20E394C2 (pseudo_id), INDEX IDX_155C857F54177093 (room_id), PRIMARY KEY(pseudo_id, room_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE pseudo_user (pseudo_id INT NOT NULL, user_id INT NOT NULL, INDEX IDX_EA5002AD20E394C2 (pseudo_id), INDEX IDX_EA5002ADA76ED395 (user_id), PRIMARY KEY(pseudo_id, user_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE room (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, theme VARCHAR(255) NOT NULL, player VARCHAR(255) DEFAULT NULL, game_master VARCHAR(255) NOT NULL, files VARCHAR(255) DEFAULT NULL, player_number INT NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE room (id INT AUTO_INCREMENT NOT NULL, uuid CHAR(36) NOT NULL COMMENT \'(DC2Type:uuid)\', name VARCHAR(255) NOT NULL, theme VARCHAR(255) NOT NULL, player VARCHAR(255) DEFAULT NULL, game_master VARCHAR(255) NOT NULL, files VARCHAR(255) DEFAULT NULL, player_number INT NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, UNIQUE INDEX UNIQ_729F519BD17F50A6 (uuid), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles LONGTEXT NOT NULL COMMENT \'(DC2Type:json)\', password VARCHAR(255) NOT NULL, pseudo VARCHAR(255) NOT NULL, icon VARCHAR(255) DEFAULT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE dice_room ADD CONSTRAINT FK_23DD619A8604FF94 FOREIGN KEY (dice_id) REFERENCES dice (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE dice_room ADD CONSTRAINT FK_23DD619A54177093 FOREIGN KEY (room_id) REFERENCES room (id) ON DELETE CASCADE');

@@ -6,18 +6,25 @@ use App\Repository\RoomRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+
+
 
 /**
  * @ORM\Entity(repositoryClass=RoomRepository::class)
  */
 class Room
 {
+    
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var \Ramsey\Uuid\UuidInterface
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private $id;
+    private $uuid;
+
+ 
 
 
     /**
@@ -69,6 +76,13 @@ class Room
      * @ORM\ManyToMany(targetEntity=Dice::class, mappedBy="room_id")
      */
     private $dices;
+   /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
     public function __construct()
     {
@@ -233,4 +247,29 @@ class Room
         return $this;
     }
 
+
+    /**
+     * Get the value of uuid
+     *
+     * @return  \Ramsey\Uuid\UuidInterface
+     */ 
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Set the value of uuid
+     *
+     * @param  \Ramsey\Uuid\UuidInterface  $uuid
+     *
+     * @return  self
+     */ 
+    
+    public function setUuid(\Ramsey\Uuid\UuidInterface $uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
 }
