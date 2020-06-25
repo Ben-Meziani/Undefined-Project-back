@@ -34,6 +34,10 @@ class RegistrationController extends AbstractController
     {
         $user = new User();
         $json = $request->request->all();
+        if(!is_null($json)) {
+            $json = ['json' => $request->getContent()];
+            
+        }
         $user = $serializer->deserialize($json['json'], User::class, 'json');
         //add icon file
         if(!is_null($request->files->get('icon'))) {
