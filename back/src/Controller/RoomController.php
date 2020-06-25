@@ -12,12 +12,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Ramsey\Uuid\Uuid;
+
 
 /**
  * @Route("/room", name="room")
  */
 class RoomController extends AbstractController
 {
+ 
     /**
      * @Route("/{id}/upload", name="room_upload", methods={"POST", "GET"})
      */
