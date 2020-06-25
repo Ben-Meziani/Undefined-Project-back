@@ -114,7 +114,7 @@ class UserController extends AbstractController
     {
         if ($this->checkToken($jwtEncoder, $request, $user)) {
             if ($request->isMethod('POST')) {
-                $file = $request->files->get('post');
+                $file = $request->files->get('icon');
                 
                 if ($file) {
                     $fileName = uniqid() . '.' . $file->guessExtension();
