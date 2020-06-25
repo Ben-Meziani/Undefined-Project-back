@@ -41,7 +41,12 @@ class RegistrationController extends AbstractController
             if ($file) {
                 $fileName = uniqid() . '.' . $file->guessExtension();
                 $file->move($this->getParameter('icon_directory'), $fileName);
-                $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)->resize(400, 400)->save();
+                $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)
+                    ->resize(400, null, function ($constraint) 
+                        {
+                            $constraint->aspectRatio();
+                        })
+                    ->save();
                 $user->setIcon($fileName);
             }
         }

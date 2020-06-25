@@ -122,7 +122,12 @@ class UserController extends AbstractController
 
                     $file->move($this->getParameter('icon_directory'), $fileName);
                     //dd($this->getParameter('icon_directory'));
-                    $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)->resize(400, 400)->save();
+                    $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)
+                        ->resize(400, null, function ($constraint) 
+                            {
+                                $constraint->aspectRatio();
+                            })
+                        ->save();
                     $user->setIcon($fileName);
                 }
                 
