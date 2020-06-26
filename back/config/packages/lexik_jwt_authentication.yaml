@@ -30,4 +30,5 @@ lexik_jwt_authentication:
         BEARER:
             lifetime: null 
             samesite: lax
+            
     
