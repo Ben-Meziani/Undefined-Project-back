@@ -25,8 +25,6 @@ class Room
     private $uuid;
 
  
-
-
     /**
      * @ORM\Column(type="string", length=255)
      */
