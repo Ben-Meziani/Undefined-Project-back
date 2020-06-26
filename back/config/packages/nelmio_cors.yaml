@@ -23,6 +23,7 @@ nelmio_cors:
             allow_methods: ['GET']
             max_age: 3600
         '^/register':
+            allow_credentials: false
             origin_regex: true
             allow_origin: ['*']
             allow_headers: ['*']
