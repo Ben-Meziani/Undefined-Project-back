@@ -5,6 +5,7 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\Room;
 use App\Form\RoomType;
+use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,11 +63,16 @@ class RoomController extends AbstractController
         $room->setCreatedAt(new DateTime());
         $em->persist($room);
         $em->flush();
-        // ...
+        
+
+        //dd($room); 
+        
+       
 
 
-        return $this->json(200);
+        return $this->json($room->getUuid(), 200);
     }
+
 
     /**
      *  @Route("/{id}/edit", name="room_edit", methods={"GET|POST"})
