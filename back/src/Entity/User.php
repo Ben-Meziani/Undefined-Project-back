@@ -72,6 +72,14 @@ class User implements UserInterface
      */
     private $dices;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Room", inversedBy="players"
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="gameMaster")
+     * @ORM\Column(type="string", length=255)
+     */
+    private $rooms;
+
+  
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
@@ -259,4 +267,17 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getRooms(): ?string
+    {
+        return $this->rooms;
+    }
+
+    public function setRooms(string $rooms): self
+    {
+        $this->rooms = $rooms;
+
+        return $this;
+    }
+
 }

@@ -36,11 +36,13 @@ class Room
     private $theme;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="rooms"
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $player;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Room", inversedBy="rooms")
      * @ORM\Column(type="string", length=255)
      */
     private $gameMaster;
