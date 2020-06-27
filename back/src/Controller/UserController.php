@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Intervention\Image\ImageManagerStatic as Image;
 
+
 /**
  * @Route("/user")
  */
@@ -136,7 +137,9 @@ class UserController extends AbstractController
                 
                 return $this->json($user->getIcon(), 200);
             }
-            return $this->json($user, 200);
+            //part where we send the picture
+            $image = Image::make($this->getParameter('icon_directory').'/'.$user->getIcon());
+            return $image->response();
         }
         else {
             return $this->json('invalid token', 403);
