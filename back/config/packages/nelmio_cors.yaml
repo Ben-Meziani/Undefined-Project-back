@@ -8,7 +8,7 @@ nelmio_cors:
         expose_headers: ['Link']
         max_age: 3600
     paths:
-        '^/login':
+        '^/login_check':
             allow_credentials: true
             origin_regex: true
             allow_origin: ['*']

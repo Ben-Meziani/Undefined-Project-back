@@ -10,11 +10,7 @@ class ExceptionListener
     public function onKernelException(AuthenticationSuccessEvent $event)
     {
         $user = $event->getUser();
-        $cookie = Cookie::create('test')
-            ->withValue('if this work OMG')
-            ->withDomain('.test.com')
-            ->withSecure(false);
-        $event->getResponse()->headers->setcookie($cookie);
+    
         $event->setData(['id'=>$user->getId(),'pseudo'=>$user->getPseudo(),'email'=>$user->getEmail(), 'icon'=>$user->getIcon()]);
     }
 }
