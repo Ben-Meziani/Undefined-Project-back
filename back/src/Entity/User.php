@@ -72,10 +72,22 @@ class User implements UserInterface
      */
     private $dices;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Room::class, inversedBy="players")
+     */
+    private $rooms;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Room::class, mappedBy="gameMaster", orphanRemoval=true)
+     */
+    private $roomsGameMaster;
+
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
         $this->dices = new ArrayCollection();
+        $this->rooms = new ArrayCollection();
+        $this->roomsGameMaster = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -255,6 +267,63 @@ class User implements UserInterface
         if ($this->dices->contains($dice)) {
             $this->dices->removeElement($dice);
             $dice->removeUserId($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Room[]
+     */
+    public function getRooms(): Collection
+    {
+        return $this->rooms;
+    }
+
+    public function addRoom(Room $room): self
+    {
+        if (!$this->rooms->contains($room)) {
+            $this->rooms[] = $room;
+        }
+
+        return $this;
+    }
+
+    public function removeRoom(Room $room): self
+    {
+        if ($this->rooms->contains($room)) {
+            $this->rooms->removeElement($room);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Room[]
+     */
+    public function getRoomsGameMaster(): Collection
+    {
+        return $this->roomsGameMaster;
+    }
+
+    public function addRoomsGameMaster(Room $roomsGameMaster): self
+    {
+        if (!$this->roomsGameMaster->contains($roomsGameMaster)) {
+            $this->roomsGameMaster[] = $roomsGameMaster;
+            $roomsGameMaster->setGameMaster($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoomsGameMaster(Room $roomsGameMaster): self
+    {
+        if ($this->roomsGameMaster->contains($roomsGameMaster)) {
+            $this->roomsGameMaster->removeElement($roomsGameMaster);
+            // set the owning side to null (unless already changed)
+            if ($roomsGameMaster->getGameMaster() === $this) {
+                $roomsGameMaster->setGameMaster(null);
+            }
         }
 
         return $this;

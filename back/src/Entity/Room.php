@@ -38,16 +38,6 @@ class Room
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $player;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $gameMaster;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
     private $files;
 
     /**
@@ -82,12 +72,24 @@ class Room
      */
     private $id;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="rooms")
+     */
+    private $players;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="roomsGameMaster")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $gameMaster;
+
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
         $this->dices = new ArrayCollection();
         $min="1"; $max="1000";
         $this->uuid = uniqid(random_int($min, $max));
+        $this->players = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,30 +117,6 @@ class Room
     public function setTheme(string $theme): self
     {
         $this->theme = $theme;
-
-        return $this;
-    }
-
-    public function getPlayer(): ?string
-    {
-        return $this->player;
-    }
-
-    public function setPlayer(string $player): self
-    {
-        $this->player = $player;
-
-        return $this;
-    }
-
-    public function getGameMaster(): ?string
-    {
-        return $this->gameMaster;
-    }
-
-    public function setGameMaster(string $gameMaster): self
-    {
-        $this->gameMaster = $gameMaster;
 
         return $this;
     }
@@ -268,6 +246,46 @@ class Room
     
     public function setUuid(\Ramsey\Uuid\UuidInterface $uuid)
     {
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getPlayers(): Collection
+    {
+        return $this->players;
+    }
+
+    public function addPlayer(User $player): self
+    {
+        if (!$this->players->contains($player)) {
+            $this->players[] = $player;
+            $player->addRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlayer(User $player): self
+    {
+        if ($this->players->contains($player)) {
+            $this->players->removeElement($player);
+            $player->removeRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function getGameMaster(): ?User
+    {
+        return $this->gameMaster;
+    }
+
+    public function setGameMaster(?User $gameMaster): self
+    {
+        $this->gameMaster = $gameMaster;
 
         return $this;
     }

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\Room;
+use App\Entity\User;
 use App\Form\RoomType;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -54,8 +55,10 @@ class RoomController extends AbstractController
     {
         $room = new Room;
         $json = $request->getContent();
-
         $room = $serializer->deserialize($json, Room::class, 'json');
+        $user = $this->getDoctrine()->getRepository(User::class)->find(1);
+        $room->setGameMaster($user);
+        dd($room);
         $error = $validator->validate($room);
         if (count($error) > 0) {
             return $this->json($error, 400);
