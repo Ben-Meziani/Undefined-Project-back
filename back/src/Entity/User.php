@@ -73,7 +73,7 @@ class User implements UserInterface
     private $dices;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Room", inversedBy="players"
+     * @ORM\ManyToOne(targetEntity="App\Entity\Room", inversedBy="players")
      * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="gameMaster")
      * @ORM\Column(type="string", length=255)
      */
