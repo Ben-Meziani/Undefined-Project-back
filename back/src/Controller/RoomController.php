@@ -57,7 +57,10 @@ class RoomController extends AbstractController
         $room = new Room;
         $json = $request->getContent();
         $room = $serializer->deserialize($json, Room::class, 'json');
-        $user = $this->getDoctrine()->getRepository(User::class)->find(1);
+        //decode to retreive game master id
+        $gmId = get_object_vars(json_decode($json));
+        //dd($gmId);
+        $user = $this->getDoctrine()->getRepository(User::class)->find($gmId['gameMaster']);
         $room->setTheme('HP');
         $room->setGameMaster($user);
         $room->setRoomPassword(uniqid("pw"));
@@ -85,9 +88,8 @@ class RoomController extends AbstractController
         if (!is_null($json)) {
             $idRoom = $json['uniqueId'];
             $password = $json['password'];
-
+            //custom request at the table room
             $conn = $em->getConnection();
-
             $sql = '
                 SELECT * FROM room r
                 WHERE r.room_password = :password
@@ -95,6 +97,9 @@ class RoomController extends AbstractController
             $stmt = $conn->prepare($sql);
             $stmt->execute(['password' => $password]);
             $room = $stmt->fetchAll();
+
+            $roomEntity = new Room;
+            //$roomEntity->$em->
         }
         dd($idRoom, $password, $user, $room);
     }
