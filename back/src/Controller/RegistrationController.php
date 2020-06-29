@@ -80,23 +80,25 @@ class RegistrationController extends AbstractController
     /**
      *@Route("/activation/{token}", name="activation")
      */
-    public function activation($token, UserRepository $userRepo, ValidatorInterface $validator){
-        //On vérifie si un utilisateur utilise ce token
-        $user = $userRepo->findOneBy(['activation_token'=>$token]);
+    public function activation($token, UserRepository $userRepo)
+    {
+        // On recherche si un utilisateur avec ce token existe dans la base de données
+        $user = $userRepo->findOneBy(['activation_token' => $token]);
 
-        //si aucun utilisateur n'existe avec ce token 
-        $error = $validator->validate($user);
+        // Si aucun utilisateur n'est associé à ce token
         if(!$user){
-            return $this->json($error, 400);
+            // On renvoie une erreur 404
+            throw $this->createNotFoundException('Cet utilisateur n\'existe pas');
         }
-        //on supprime le token  
+
+        // On supprime le token
         $user->setActivationToken(null);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
 
         $this->addflash('message', 'Vous avez bien activé votre compte');
 
-       
+        return $this->render('security/login.html.twig');
      }
 }

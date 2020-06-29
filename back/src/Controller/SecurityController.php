@@ -30,10 +30,11 @@ class SecurityController extends AbstractController
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-
+        $lastUsername = $authenticationUtils->getLastUsername();
         //dd(empty($error));
         if (empty($error)) {
-            return $this->json(200);
+          // return $this->json(200);
+           return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
         } else {
             return $this->json($error, 401);
         }
@@ -108,7 +109,7 @@ class SecurityController extends AbstractController
                 ->setFrom('no-reply@monadresse.fr')
                 ->setTo($user->getEmail())
                 ->setBody(
-                    "Bonjour,<br><br>Une demande de réinitialisation de mot de passe a été effectuée pour le site Nouvelle-Techno.fr. Veuillez cliquer sur le lien suivant : " . $url,
+                    "Bonjour,<br><br>Une demande de réinitialisation de mot de passe a été effectuée pour le site undefined-project.tk/. Veuillez cliquer sur le lien suivant : " . $url,
                     'text/html'
                 )
             ;
@@ -126,6 +127,11 @@ class SecurityController extends AbstractController
         // On envoie le formulaire à la vue
         return $this->render('security/forgotten_password.html.twig', ['emailForm' => $form->createView()]);
     }
+
+
+    /**
+     * @Route("/reset_pass/{token}", name="app_reset_password")
+     */
     public function resetPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder)
     {
         // On cherche un utilisateur avec le token donné
@@ -159,6 +165,8 @@ class SecurityController extends AbstractController
                 // Si on n'a pas reçu les données, on affiche le formulaire
                 return $this->render('security/reset_password.html.twig', ['token' => $token]);
             }
+            return $this->redirectToRoute('app_login');
         }
+        return $this->redirectToRoute('app_login');
     }
 }
