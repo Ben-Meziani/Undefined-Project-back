@@ -138,10 +138,11 @@ class UserController extends AbstractController
                 $entityManager->flush();
                 
                 return $this->json($user->getIcon(), 200);
+            } else {
+                //part where we send the picture
+                $image = Image::make($this->getParameter('icon_directory').'/'.$user->getIcon());
+                return $image->response();
             }
-            //part where we send the picture
-            $image = Image::make($this->getParameter('icon_directory').'/'.$user->getIcon());
-            return $image->response();
         }
         else {
             return $this->json('invalid token', 403);
