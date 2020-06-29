@@ -75,7 +75,7 @@ class UserController extends AbstractController
             return $this->json($user, 200);
         } else {
             //patch les donée
-            dd($json);
+            dd($request);
             $error = $validator->validate($user);
             if (count($error) > 0) {
                 return $this->json($error, 400);
