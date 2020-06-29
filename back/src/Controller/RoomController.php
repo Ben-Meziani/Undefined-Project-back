@@ -57,8 +57,10 @@ class RoomController extends AbstractController
         $json = $request->getContent();
         $room = $serializer->deserialize($json, Room::class, 'json');
         $user = $this->getDoctrine()->getRepository(User::class)->find(1);
+        $room->setTheme('HP');
         $room->setGameMaster($user);
-        dd($room);
+        //dd($room);
+        
         $error = $validator->validate($room);
         if (count($error) > 0) {
             return $this->json($error, 400);
