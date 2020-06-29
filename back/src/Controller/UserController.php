@@ -29,12 +29,12 @@ class UserController extends AbstractController
     private function checkToken(JWTEncoderInterface $jwtEncoder, $request, $user)
     {
         
-        $token = $request->headers->get('Cookie');
+        $token = $request->cookies->get('BEARER');
         //dd($token);
-        $token_trim = explode(';', $token)[1];
-        $token_trim = explode('=', $token_trim)[1];
+        //$token_trim = explode(';', $token)[1];
+        //$token_trim = explode('=', $token_trim)[1];
         //dd($token_trim, $token);
-        $token_decoded = $jwtEncoder->decode($token_trim);
+        $token_decoded = $jwtEncoder->decode($token);
         if ($user->getEmail() == $token_decoded["username"]) {
             return true;
         }
@@ -70,12 +70,12 @@ class UserController extends AbstractController
 
         $json = $request->getContent();
         
-        if (!$json) {
+        if ($request->isMethod('GET')) {
             //recup user et renvoie
             return $this->json($user, 200);
         } else {
             //patch les donée
-            dd($request);
+            dd($request->files->get('icon'));
             $error = $validator->validate($user);
             if (count($error) > 0) {
                 return $this->json($error, 400);
