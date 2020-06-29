@@ -7,6 +7,7 @@ use App\Entity\Room;
 use App\Entity\User;
 use App\Form\RoomType;
 use App\Repository\RoomRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,7 +79,25 @@ class RoomController extends AbstractController
     /**
      * @Route("/{id}/join", name="room_join", methods={"POST"})
      */
-    public function ()
+    public function joinRoom(Request $request, User $user, EntityManagerInterface $em)
+    {
+        $json = get_object_vars(json_decode($request->getContent()));
+        if (!is_null($json)) {
+            $idRoom = $json['uniqueId'];
+            $password = $json['password'];
+
+            $conn = $em->getConnection();
+
+            $sql = '
+                SELECT * FROM room r
+                WHERE r.room_password = :password
+                ';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(['password' => $password]);
+            $room = $stmt->fetchAll();
+        }
+        dd($idRoom, $password, $user, $room);
+    }
 
 
     /**
