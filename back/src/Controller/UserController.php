@@ -31,9 +31,9 @@ class UserController extends AbstractController
         
         $token = $request->headers->get('Cookie');
         //dd($token);
-        $token_trim = explode('=', $token)[1];
-        $token_trim = explode(';', $token_trim)[1];
-        dd($token_trim, $token);
+        $token_trim = explode(';', $token)[1];
+        //$token_trim = explode(';', $token_trim)[1];
+        //dd($token_trim, $token);
         $token_decoded = $jwtEncoder->decode($token_trim);
         if ($user->getEmail() == $token_decoded["username"]) {
             return true;
