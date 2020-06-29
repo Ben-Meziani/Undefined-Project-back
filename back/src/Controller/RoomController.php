@@ -59,8 +59,9 @@ class RoomController extends AbstractController
         $user = $this->getDoctrine()->getRepository(User::class)->find(1);
         $room->setTheme('HP');
         $room->setGameMaster($user);
+        $room->setRoomPassword(uniqid("pw"));
         //dd($room);
-        
+    
         $error = $validator->validate($room);
         if (count($error) > 0) {
             return $this->json($error, 400);
@@ -69,14 +70,15 @@ class RoomController extends AbstractController
         $em->persist($room);
         $em->flush();
         
-
         //dd($room); 
-        
-       
 
-
-        return $this->json($room->getUuid(), 200);
+        return $this->json(['uniqueId'=>$room->getUuid(), 'paswword'=>$room->getRoomPassword()], 200);
     }
+
+    /**
+     * @Route("/{id}/join", name="room_join", methods={"POST"})
+     */
+    public function ()
 
 
     /**

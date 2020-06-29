@@ -83,6 +83,11 @@ class Room
      */
     private $gameMaster;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $roomPassword;
+
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
@@ -286,6 +291,18 @@ class Room
     public function setGameMaster(?User $gameMaster): self
     {
         $this->gameMaster = $gameMaster;
+
+        return $this;
+    }
+
+    public function getRoomPassword(): ?string
+    {
+        return $this->roomPassword;
+    }
+
+    public function setRoomPassword(string $roomPassword): self
+    {
+        $this->roomPassword = $roomPassword;
 
         return $this;
     }
