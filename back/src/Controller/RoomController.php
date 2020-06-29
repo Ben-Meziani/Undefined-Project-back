@@ -92,16 +92,27 @@ class RoomController extends AbstractController
             $sql = '
                 SELECT * FROM room r
                 WHERE r.room_password = :password
+                AND r.uuid = :id
                 ';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(['password' => $password]);
+            $stmt->execute(['password' => $password, 'id' => $idRoom]);
             $room = $stmt->fetchAll();
-
+            if(empty($room)) {
+                return $this->json("invalid room credentials", 401);
+            }
             $roomEntity = $this->getDoctrine()->getRepository(Room::class)->find($room[0]['id']);
-            $roomEntity->addPlayer($user);
-            $em->flush();
+            if($roomEntity->getGameMaster()->getId() !== $user->getId()){
+                $roomEntity->addPlayer($user);
+                $em->flush();
+                //$roomArray = $roomEntity->getPlayers()->toArray();
+                
+                return $this->json(200);
+            } else {
+                return $this->json('already game master', 401);
+            }
+        } else {
+            return $this->json('no json', 400);
         }
-        dd($idRoom, $password, $user, $roomEntity);
     }
 
 
