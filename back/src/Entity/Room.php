@@ -6,19 +6,25 @@ use App\Repository\RoomRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+
+
 
 /**
  * @ORM\Entity(repositoryClass=RoomRepository::class)
  */
 class Room
 {
+    
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @var \Ramsey\Uuid\UuidInterface
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
-    private $id;
+    private $uuid;
 
+ 
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -68,11 +74,20 @@ class Room
      * @ORM\ManyToMany(targetEntity=Dice::class, mappedBy="room_id")
      */
     private $dices;
+   /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
         $this->dices = new ArrayCollection();
+        $min="1"; $max="1000";
+        $this->uuid = uniqid(random_int($min, $max));
     }
 
     public function getId(): ?int
@@ -228,6 +243,31 @@ class Room
             $this->dices->removeElement($dice);
             $dice->removeRoomId($this);
         }
+
+        return $this;
+    }
+
+
+    /**
+     * Get the value of uuid
+     *
+     * @return  \Ramsey\Uuid\UuidInterface
+     */ 
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Set the value of uuid
+     *
+     * @param  \Ramsey\Uuid\UuidInterface  $uuid
+     *
+     * @return  self
+     */ 
+    
+    public function setUuid(\Ramsey\Uuid\UuidInterface $uuid)
+    {
 
         return $this;
     }

@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    file_directory: '%kernel.project_dir%/public/uploads/files'
+    icon_directory: '%kernel.project_dir%/public/uploads/icons'
 
 services:
     # default configuration for services in *this* file
@@ -25,5 +27,7 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-
-        
+    
+    App\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onKernelException }

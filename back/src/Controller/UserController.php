@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Intervention\Image\ImageManagerStatic as Image;
+
 
 /**
  * @Route("/user")
@@ -27,12 +29,12 @@ class UserController extends AbstractController
     private function checkToken(JWTEncoderInterface $jwtEncoder, $request, $user)
     {
         
-        $token = $request->headers->get('Cookie');
+        $token = $request->cookies->get('BEARER');
         //dd($token);
-        $token_trim = explode('=', $token)[1];
-        $token_trim = explode(';', $token_trim)[0];
+        //$token_trim = explode(';', $token)[1];
+        //$token_trim = explode('=', $token_trim)[1];
         //dd($token_trim, $token);
-        $token_decoded = $jwtEncoder->decode($token_trim);
+        $token_decoded = $jwtEncoder->decode($token);
         if ($user->getEmail() == $token_decoded["username"]) {
             return true;
         }
@@ -67,12 +69,13 @@ class UserController extends AbstractController
         }
 
         $json = $request->getContent();
-        if (!$json) {
+        
+        if ($request->isMethod('GET')) {
             //recup user et renvoie
             return $this->json($user, 200);
         } else {
             //patch les donée
-
+            dd($_POST);
             $error = $validator->validate($user);
             if (count($error) > 0) {
                 return $this->json($error, 400);
@@ -104,5 +107,45 @@ class UserController extends AbstractController
             return $this->json(200);
         }
         return $this->json(404);
+    }
+
+    /**
+     * @Route("/{id}/icon", name="user_icon", methods={"POST", "GET"})
+     */
+    public function uploadImageRoom(Request $request, User $user,JWTEncoderInterface $jwtEncoder)
+    {
+        if ($this->checkToken($jwtEncoder, $request, $user)) {
+            if ($request->isMethod('POST')) {
+                dd($request);
+                $file = $request->files->get('icon');
+                
+                if ($file) {
+                    $fileName = uniqid() . '.' . $file->guessExtension();
+                    
+
+                    $file->move($this->getParameter('icon_directory'), $fileName);
+                    //dd($this->getParameter('icon_directory'));
+                    $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)
+                        ->resize(400, null, function ($constraint) 
+                            {
+                                $constraint->aspectRatio();
+                            })
+                        ->save();
+                    $user->setIcon($fileName);
+                }
+                
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->flush();
+                
+                return $this->json($user->getIcon(), 200);
+            } else {
+                //part where we send the picture
+                $image = Image::make($this->getParameter('icon_directory').'/'.$user->getIcon());
+                return $image->response();
+            }
+        }
+        else {
+            return $this->json('invalid token', 403);
+        }
     }
 }

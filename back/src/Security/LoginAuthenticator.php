@@ -50,12 +50,13 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
     {
         
         $data = json_decode($request->getContent(), true);
+        //dd($data);
         
-        //$serializer->deserialize($request->getContent(), User::class ,'jsons' );
+        
         $credentials = [
             'email' => $data['email'],
             'password' => $data['password'],
-            
+            'csrf_token' => 'oto'
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
