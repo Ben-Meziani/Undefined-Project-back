@@ -17,10 +17,7 @@ class Room
 {
     
     /**
-     * @var \Ramsey\Uuid\UuidInterface
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Column(type="string")
      */
     private $uuid;
 
@@ -92,8 +89,7 @@ class Room
     {
         $this->pseudos = new ArrayCollection();
         $this->dices = new ArrayCollection();
-        $min="1"; $max="1000";
-        $this->uuid = uniqid(random_int($min, $max));
+        $this->uuid = uniqid('id');
         $this->players = new ArrayCollection();
     }
 
