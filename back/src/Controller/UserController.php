@@ -69,12 +69,13 @@ class UserController extends AbstractController
         }
 
         $json = $request->getContent();
+        
         if (!$json) {
             //recup user et renvoie
             return $this->json($user, 200);
         } else {
             //patch les donée
-
+            dd($json);
             $error = $validator->validate($user);
             if (count($error) > 0) {
                 return $this->json($error, 400);
