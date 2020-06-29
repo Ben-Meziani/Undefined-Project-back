@@ -75,7 +75,7 @@ class UserController extends AbstractController
             return $this->json($user, 200);
         } else {
             //patch les donée
-            dd($request->files);
+            
             $error = $validator->validate($user);
             if (count($error) > 0) {
                 return $this->json($error, 400);
@@ -115,6 +115,7 @@ class UserController extends AbstractController
     public function uploadImageRoom(Request $request, User $user,JWTEncoderInterface $jwtEncoder)
     {
         if ($this->checkToken($jwtEncoder, $request, $user)) {
+            dd($request->files);
             if ($request->isMethod('POST')) {
                 $file = $request->files->get('icon');
                 
