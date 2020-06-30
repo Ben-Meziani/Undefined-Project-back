@@ -69,7 +69,7 @@ class UserController extends AbstractController
         }
 
         $json = $request->request;
-        dd($json);
+        //dd($json);
         if ($request->isMethod('GET')) {
             //recup user et renvoie
             return $this->json($user, 200);
@@ -80,6 +80,7 @@ class UserController extends AbstractController
             if (count($error) > 0) {
                 return $this->json($error, 400);
             }
+            dd($icon);
             //$this->uploadImageRoom($icon, $id, JWTEncoderInterface);
             $serializer->deserialize($json, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
             $user->setUpdatedAt(new DateTime());
