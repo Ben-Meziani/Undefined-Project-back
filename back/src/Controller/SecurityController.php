@@ -84,7 +84,7 @@ class SecurityController extends AbstractController
                 $this->addFlash('danger', 'Cette adresse e-mail est inconnue');
                 
                 // On retourne sur la page de connexion
-                return $this->redirectToRoute('app_login');
+              
             }
 
             // On génère un token
@@ -98,7 +98,7 @@ class SecurityController extends AbstractController
                 $entityManager->flush();
             } catch (\Exception $e) {
                 $this->addFlash('warning', $e->getMessage());
-                return $this->redirectToRoute('app_login');
+              
             }
 
             // On génère l'URL de réinitialisation de mot de passe
@@ -120,12 +120,10 @@ class SecurityController extends AbstractController
             // On crée le message flash de confirmation
             $this->addFlash('message', 'E-mail de réinitialisation du mot de passe envoyé !');
 
-            // On redirige vers la page de login
-            return $this->redirectToRoute('app_login');
+
         }
 
-        // On envoie le formulaire à la vue
-        return $this->render('security/forgotten_password.html.twig', ['emailForm' => $form->createView()]);
+        return $this->json(200);
     }
 
 
@@ -141,7 +139,7 @@ class SecurityController extends AbstractController
         if ($user === null) {
             // On affiche une erreur
             $this->addFlash('danger', 'Token Inconnu');
-            return $this->redirectToRoute('app_login');
+          
 
             // Si le formulaire est envoyé en méthode post
             if ($request->isMethod('POST')) {
@@ -160,13 +158,13 @@ class SecurityController extends AbstractController
                 $this->addFlash('message', 'Mot de passe mis à jour');
     
                 // On redirige vers la page de connexion
-                return $this->redirectToRoute('app_login');
+              
             } else {
                 // Si on n'a pas reçu les données, on affiche le formulaire
-                return $this->render('security/reset_password.html.twig', ['token' => $token]);
+                return $this->json(200);
             }
-            return $this->redirectToRoute('app_login');
+          
         }
-        return $this->redirectToRoute('app_login');
+      
     }
 }
