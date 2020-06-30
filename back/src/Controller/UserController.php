@@ -81,7 +81,7 @@ class UserController extends AbstractController
                 return $this->json($error, 400);
             }
             //dd($icon);
-            $this->uploadImageRoom($icon, $id, JWTEncoderInterface);
+            $this->uploadImageRoom($icon, $id);
             $serializer->deserialize($json, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
             $user->setUpdatedAt(new DateTime());
 
