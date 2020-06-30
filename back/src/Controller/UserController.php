@@ -69,7 +69,7 @@ class UserController extends AbstractController
         }
 
         $json = $request->request;
-        //dd($json);
+        dd($json);
         if ($request->isMethod('GET')) {
             //recup user et renvoie
             return $this->json($user, 200);
@@ -113,12 +113,12 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}/icon", name="user_icon", methods={"POST", "GET"})
      */
-    public function uploadImageRoom($request, $user)
+    public function uploadImageRoom($file, $user)
     {
         //if ($this->checkToken($jwtEncoder, $request, $user)) {
-            if ($request->isMethod('POST')) {
-                dd($request);die;
-                //$file = $request->files->get('icon');
+            //if ($request->isMethod('POST')) {
+                //dd($request)
+                $userEntity = $this->getDoctrine()->getRepository(User::class)->find($user);
                 
                 if ($file) {
                     $fileName = uniqid() . '.' . $file->guessExtension();
@@ -132,18 +132,18 @@ class UserController extends AbstractController
                                 $constraint->aspectRatio();
                             })
                         ->save();
-                    $user->setIcon($fileName);
+                    $userEntity->setIcon($fileName);
                 }
                 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->flush();
                 
-                return $this->json($user->getIcon(), 200);
-            } else {
+                
+            //} else {
                 //part where we send the picture
-                $image = Image::make($this->getParameter('icon_directory').'/'.$user->getIcon());
-                return $image->response();
-            }
+            //    $image = Image::make($this->getParameter('icon_directory').'/'.$user->getIcon());
+            //    return $image->response();
+            //}
         //}
         //else {
         //    return $this->json('invalid token', 403);
