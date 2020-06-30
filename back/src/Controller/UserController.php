@@ -68,7 +68,7 @@ class UserController extends AbstractController
             return $this->json('invalid token', 403);
         }
 
-        $json = $request->getContent();
+        $json = $request;
         dd($json);
         if ($request->isMethod('GET')) {
             //recup user et renvoie
