@@ -99,6 +99,6 @@ class RegistrationController extends AbstractController
 
         $this->addflash('message', 'Vous avez bien activé votre compte');
 
-        return $this->render('security/login.html.twig');
+        return $this->json($user, 200);
      }
 }
