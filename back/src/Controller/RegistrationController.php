@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 use DateTime;
+use App\Service\MailerService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,12 +27,12 @@ class RegistrationController extends AbstractController
          {
              $this->passwordEncoder = $passwordEncoder;
          }
-    
+ 
 
     /**
-     * @Route("/register", name="app_registration", methods={"POST"})
+     * @Route("/register", name="app_registration")
      */
-    public function register(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator)
+    public function register(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator, \Swift_Mailer  $mailer)
     {
         $user = new User();
         $json = $request->request->all();
@@ -56,26 +58,66 @@ class RegistrationController extends AbstractController
         }
 
         $user->setCreatedAt(new DateTime());
-        
-        $errors = $validator->validate($user);
-        
-        if (count($errors) > 0) {
-            foreach ($errors as $error) {
-                $message[] = [$error->getMessage()];
-            }
-            return $this->json($message, 400);
-        }
+       
         //encode password
         $user->setPassword($this->passwordEncoder->encodePassword(
             $user,
             $user->getPassword()
         ));
+        
+        $error = $validator->validate($user);
+        if (count($error) > 0) {
+            return $this->json($error, 400);
+        }
+        // On génère le token d'activation
+         $user->setActivationToken(md5(uniqid()));
 
         $em->persist($user);
         $em->flush();
 
+        // do anything else you need here, like send an email
+        // on créé le message 
+        $message =(new \Swift_Message('Activation de votre compte'))
+        
+        // On attribue l'expediteur 
+        ->setFrom('noreply@server.com')
+        
+        //on attribue le destinataire 
+        ->setTo($user->getEmail())
+
+        //on créé le contenu
+        ->setBody(
+            $this->renderView(
+                'emails/activation.html.twig', ['token' => $user->getActivationToken()]
+            ),
+            'text/html'
+        )
+;
+        $mailer->send($message);
         return $this->json($user, 200);
     }
 
-    
+    /**
+     *@Route("/activation/{token}", name="activation")
+     */
+    public function activation($token, UserRepository $userRepo)
+    {
+        // On recherche si un utilisateur avec ce token existe dans la base de données
+        $user = $userRepo->findOneBy(['activation_token' => $token]);
+
+        // Si aucun utilisateur n'est associé à ce token
+        if(!$user){
+            // On renvoie une erreur 404
+            throw $this->createNotFoundException('Cet utilisateur n\'existe pas');
+        }
+
+        // On supprime le token
+        $user->setActivationToken(null);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json($user, 200);
+
+     }
 }
