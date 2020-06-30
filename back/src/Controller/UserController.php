@@ -113,7 +113,7 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}/icon", name="user_icon", methods={"POST", "GET"})
      */
-    public function uploadImageRoom($request, $user,JWTEncoderInterface $jwtEncoder)
+    public function uploadImageRoom($request, $user)
     {
         //if ($this->checkToken($jwtEncoder, $request, $user)) {
             if ($request->isMethod('POST')) {
