@@ -69,7 +69,6 @@ class UserController extends AbstractController
         }
 
         $data = $request->request->all();
-        //dd($data, $user);
         if ($request->isMethod('GET')) {
             //recup user et renvoie
             return $this->json($user, 200);
@@ -83,7 +82,7 @@ class UserController extends AbstractController
             $this->uploadImageRoom($icon, $id);
             $user->setEmail($data["email"]);
             $user->setPseudo($data["pseudo"]);
-            //dd($user);
+            
             $user->setUpdatedAt(new DateTime());
 
             $this->getDoctrine()->getManager()->flush();
@@ -112,42 +111,28 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/icon", name="user_icon", methods={"POST", "GET"})
+     * function treating the upload of the icon from edit_user route 
      */
     public function uploadImageRoom($file, $user)
     {
-        //if ($this->checkToken($jwtEncoder, $request, $user)) {
-            //if ($request->isMethod('POST')) {
-                //dd($request)
-                $userEntity = $this->getDoctrine()->getRepository(User::class)->find($user);
-                
-                if ($file) {
-                    $fileName = uniqid() . '.' . $file->guessExtension();
-                    
+        $userEntity = $this->getDoctrine()->getRepository(User::class)->find($user);
+        
+        if ($file) {
+            $fileName = uniqid() . '.' . $file->guessExtension();
+            
 
-                    $file->move($this->getParameter('icon_directory'), $fileName);
-                    //dd($this->getParameter('icon_directory'));
-                    $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)
-                        ->resize(400, null, function ($constraint) 
-                            {
-                                $constraint->aspectRatio();
-                            })
-                        ->save();
-                    $userEntity->setIcon($fileName);
-                }
-                
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->flush();
-                
-                
-            //} else {
-                //part where we send the picture
-            //    $image = Image::make($this->getParameter('icon_directory').'/'.$user->getIcon());
-            //    return $image->response();
-            //}
-        //}
-        //else {
-        //    return $this->json('invalid token', 403);
-        //}
+            $file->move($this->getParameter('icon_directory'), $fileName);
+            //dd($this->getParameter('icon_directory'));
+            $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)
+                ->resize(400, null, function ($constraint) 
+                    {
+                        $constraint->aspectRatio();
+                    })
+                ->save();
+            $userEntity->setIcon($fileName);
+        }
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->flush();
     }
 }
