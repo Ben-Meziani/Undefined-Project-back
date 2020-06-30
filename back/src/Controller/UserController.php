@@ -83,11 +83,11 @@ class UserController extends AbstractController
             $this->uploadImageRoom($icon, $id);
             $user->setEmail($data["email"]);
             $user->setPseudo($data["pseudo"]);
-            dd($user);
+            //dd($user);
             $user->setUpdatedAt(new DateTime());
 
             $this->getDoctrine()->getManager()->flush();
-            return $this->json(200);
+            return $this->json($user, 200);
         }
     }
 
