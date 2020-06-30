@@ -62,7 +62,7 @@ class UserController extends AbstractController
      */
     public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em, JWTEncoderInterface $jwtEncoder)
     {
-        
+        dd($request);
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         if (!$this->checkToken($jwtEncoder, $request, $user)) {
             return $this->json('invalid token', 403);
