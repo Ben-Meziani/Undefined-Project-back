@@ -68,8 +68,8 @@ class UserController extends AbstractController
             return $this->json('invalid token', 403);
         }
 
-        $json = $request->request;
-        dd($json);
+        $data = $request->request->all();
+        dd($data, $user);
         if ($request->isMethod('GET')) {
             //recup user et renvoie
             return $this->json($user, 200);
@@ -80,9 +80,10 @@ class UserController extends AbstractController
             if (count($error) > 0) {
                 return $this->json($error, 400);
             }
-            //dd($icon);
             $this->uploadImageRoom($icon, $id);
-            $serializer->deserialize($json, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
+            $user->setEmail($data);
+            $user->setPseudo($data);
+            dd($user);
             $user->setUpdatedAt(new DateTime());
 
             $this->getDoctrine()->getManager()->flush();
