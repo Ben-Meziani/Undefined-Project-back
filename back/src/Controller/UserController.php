@@ -62,25 +62,25 @@ class UserController extends AbstractController
      */
     public function edit(Int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em, JWTEncoderInterface $jwtEncoder)
     {
-        dd($request->files);
+        
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
         if (!$this->checkToken($jwtEncoder, $request, $user)) {
             return $this->json('invalid token', 403);
         }
 
         $json = $request->getContent();
-        
+        dd($json);
         if ($request->isMethod('GET')) {
             //recup user et renvoie
             return $this->json($user, 200);
         } else {
             //patch les donée
-            dd($_POST);
+            $icon = $request->files->get('icon'); //OK
             $error = $validator->validate($user);
             if (count($error) > 0) {
                 return $this->json($error, 400);
             }
-            //dd($user);
+            //$this->uploadImageRoom($icon, $id, JWTEncoderInterface);
             $serializer->deserialize($json, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
             $user->setUpdatedAt(new DateTime());
 
@@ -112,9 +112,9 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}/icon", name="user_icon", methods={"POST", "GET"})
      */
-    public function uploadImageRoom(Request $request, User $user,JWTEncoderInterface $jwtEncoder)
+    public function uploadImageRoom($request, User $user,JWTEncoderInterface $jwtEncoder)
     {
-        if ($this->checkToken($jwtEncoder, $request, $user)) {
+        //if ($this->checkToken($jwtEncoder, $request, $user)) {
             if ($request->isMethod('POST')) {
                 dd($request);
                 $file = $request->files->get('icon');
@@ -143,9 +143,9 @@ class UserController extends AbstractController
                 $image = Image::make($this->getParameter('icon_directory').'/'.$user->getIcon());
                 return $image->response();
             }
-        }
-        else {
-            return $this->json('invalid token', 403);
-        }
+        //}
+        //else {
+        //    return $this->json('invalid token', 403);
+        //}
     }
 }
