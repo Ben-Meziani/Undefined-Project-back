@@ -31,7 +31,9 @@ security:
             pattern: ^/register
             stateless: true
             anonymous: true
-        
+        activation:
+            pattern: ^/activation
+            anonymous: true
         main:
             pattern:   ^/
             anonymous: false
@@ -57,4 +59,5 @@ security:
          
          - { path: ^/room, roles: IS_AUTHENTICATED_FULLY }
          - { path: ^/user, roles: IS_AUTHENTICATED_FULLY }
+         - { path: ^/activation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
