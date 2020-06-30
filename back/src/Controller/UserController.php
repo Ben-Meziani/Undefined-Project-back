@@ -115,11 +115,10 @@ class UserController extends AbstractController
      */
     public function uploadImageRoom($request, $user)
     {
-        $jwtEncoder = new JWTEncoderInterface;
         //if ($this->checkToken($jwtEncoder, $request, $user)) {
             if ($request->isMethod('POST')) {
                 dd($request);
-                $file = $request->files->get('icon');
+                //$file = $request->files->get('icon');
                 
                 if ($file) {
                     $fileName = uniqid() . '.' . $file->guessExtension();
