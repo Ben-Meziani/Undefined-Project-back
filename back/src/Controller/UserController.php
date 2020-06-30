@@ -69,7 +69,7 @@ class UserController extends AbstractController
         }
 
         $data = $request->request->all();
-        dd($data, $user);
+        //dd($data, $user);
         if ($request->isMethod('GET')) {
             //recup user et renvoie
             return $this->json($user, 200);
@@ -81,8 +81,8 @@ class UserController extends AbstractController
                 return $this->json($error, 400);
             }
             $this->uploadImageRoom($icon, $id);
-            $user->setEmail($data);
-            $user->setPseudo($data);
+            $user->setEmail($data["email"]);
+            $user->setPseudo($data["pseudo"]);
             dd($user);
             $user->setUpdatedAt(new DateTime());
 
