@@ -108,10 +108,15 @@ class SecurityController extends AbstractController
             $message = (new \Swift_Message('Mot de passe oublié'))
                 ->setFrom('no-reply@monadresse.fr')
                 ->setTo($user->getEmail())
-                ->setBody(
+                /* ->setBody(
                     "Bonjour,<br><br>Une demande de réinitialisation de mot de passe a été effectuée pour le site undefined-project.tk/. Veuillez cliquer sur le lien suivant : " . $url,
                     'text/html'
-                )
+                ) */
+                ->setBody(
+                    $this->renderView(
+                        'emails/resetPassword.html.twig', ['token' => $user->getResetToken()]
+                    ),
+                    'text/html')
             ;
 
             // On envoie l'e-mail
