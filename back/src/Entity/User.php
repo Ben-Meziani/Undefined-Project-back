@@ -83,6 +83,7 @@ class User implements UserInterface
      */
     private $roomsGameMaster;
 
+    /**
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $activation_token;
@@ -297,7 +298,8 @@ class User implements UserInterface
         if (!$this->rooms->contains($room)) {
             $this->rooms[] = $room;
         }
-
+    }
+    
     public function getActivationToken(): ?string
     {
         return $this->activation_token;
@@ -348,6 +350,7 @@ class User implements UserInterface
                 $roomsGameMaster->setGameMaster(null);
             }
         }
+    }
 
     public function getResetToken(): ?string
     {
