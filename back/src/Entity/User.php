@@ -73,6 +73,16 @@ class User implements UserInterface
     private $dices;
 
     /**
+
+     * @ORM\ManyToMany(targetEntity=Room::class, inversedBy="players")
+     */
+    private $rooms;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Room::class, mappedBy="gameMaster", orphanRemoval=true)
+     */
+    private $roomsGameMaster;
+
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $activation_token;
@@ -82,10 +92,13 @@ class User implements UserInterface
      */
     private $reset_token;
 
+
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
         $this->dices = new ArrayCollection();
+        $this->rooms = new ArrayCollection();
+        $this->roomsGameMaster = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -270,6 +283,21 @@ class User implements UserInterface
         return $this;
     }
 
+
+    /**
+     * @return Collection|Room[]
+     */
+    public function getRooms(): Collection
+    {
+        return $this->rooms;
+    }
+
+    public function addRoom(Room $room): self
+    {
+        if (!$this->rooms->contains($room)) {
+            $this->rooms[] = $room;
+        }
+
     public function getActivationToken(): ?string
     {
         return $this->activation_token;
@@ -279,8 +307,47 @@ class User implements UserInterface
     {
         $this->activation_token = $activation_token;
 
+
         return $this;
     }
+
+
+    public function removeRoom(Room $room): self
+    {
+        if ($this->rooms->contains($room)) {
+            $this->rooms->removeElement($room);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Room[]
+     */
+    public function getRoomsGameMaster(): Collection
+    {
+        return $this->roomsGameMaster;
+    }
+
+    public function addRoomsGameMaster(Room $roomsGameMaster): self
+    {
+        if (!$this->roomsGameMaster->contains($roomsGameMaster)) {
+            $this->roomsGameMaster[] = $roomsGameMaster;
+            $roomsGameMaster->setGameMaster($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoomsGameMaster(Room $roomsGameMaster): self
+    {
+        if ($this->roomsGameMaster->contains($roomsGameMaster)) {
+            $this->roomsGameMaster->removeElement($roomsGameMaster);
+            // set the owning side to null (unless already changed)
+            if ($roomsGameMaster->getGameMaster() === $this) {
+                $roomsGameMaster->setGameMaster(null);
+            }
+        }
 
     public function getResetToken(): ?string
     {
@@ -290,6 +357,7 @@ class User implements UserInterface
     public function setResetToken(?string $reset_token): self
     {
         $this->reset_token = $reset_token;
+
 
         return $this;
     }
