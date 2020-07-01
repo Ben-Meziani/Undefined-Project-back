@@ -19,11 +19,11 @@ class DiceController extends AbstractController
     /**
      * @Route("/{id}", name="dice_roll")
      */
-    public function roll(User $user, Request $request) 
+    public function roll(User $user, Request $request)
     {
         $json = $request->getContent();
         $params = json_decode($json);
-        $resultat = $this->apiDice($params->dice,$params->launch);
+        $resultat = $this->apiDice($params->dice, $params->launch);
         $this->save($user, $resultat, $params->dice, $params->room);
 
         return $this->json($resultat, 200);
@@ -38,12 +38,12 @@ class DiceController extends AbstractController
     }
 
     //save the launchs in the bdd
-    private function save(User $user, $resultat, $diceType, $roomId) 
+    private function save(User $user, $resultat, $diceType, $roomId)
     {
         $resultatDecoded = json_decode($resultat);
         $room = $this->getDoctrine()->getRepository(Room::class)->find($roomId);
         //dd($resultatDecoded);
-        foreach($resultatDecoded as $launch) {
+        foreach ($resultatDecoded as $launch) {
             $dice = new Dice;
             $dice->setLaunchBy($user->getPseudo());
             $dice->setResult($launch->value);
@@ -55,5 +55,30 @@ class DiceController extends AbstractController
             $manager->persist($dice);
             $manager->flush();
         }
+    }
+
+    /**
+     * @Route("/{id}/save", name="dice_save", methods={"POST"})
+     * need result + room id
+     */
+    public function saveLaunch(User $user, Request $request)
+    {
+        $data = json_decode($request->getContent());
+        $result = $data->result;
+        $roomId = $data->room;
+        $room = $this->getDoctrine()->getRepository(Room::class)->find($roomId);
+
+        $dice = new Dice;
+        $dice->setLaunchBy($user->getPseudo());
+        $dice->setResult($result);
+        $dice->setType("6");
+        $dice->setCreatedAt(new DateTime());
+        $dice->addRoomId($room);
+        $dice->addUserId($user);
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($dice);
+        $manager->flush();
+
+        return $this->json(200);
     }
 }
