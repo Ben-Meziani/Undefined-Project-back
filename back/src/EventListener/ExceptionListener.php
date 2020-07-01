@@ -11,6 +11,6 @@ class ExceptionListener
     {
         $user = $event->getUser();
        
-        $event->setData(['id'=>$user->getId(),'pseudo'=>$user->getPseudo(),'email'=>$user->getEmail()]);
+        $event->setData(['id'=>$user->getId(),'pseudo'=>$user->getPseudo(),'email'=>$user->getEmail(), 'icon'=>$user->getIcon()]);
     }
 }

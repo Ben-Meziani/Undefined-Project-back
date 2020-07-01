@@ -32,6 +32,7 @@
         "symfony/serializer": "5.1.*",
         "symfony/serializer-pack": "*",
         "symfony/string": "5.1.*",
+        "symfony/swiftmailer-bundle": "^3.4",
         "symfony/translation": "5.1.*",
         "symfony/twig-pack": "*",
         "symfony/uid": "5.1.*",

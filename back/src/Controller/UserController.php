@@ -29,12 +29,12 @@ class UserController extends AbstractController
     private function checkToken(JWTEncoderInterface $jwtEncoder, $request, $user)
     {
         
-        $token = $request->headers->get('Cookie');
+        $token = $request->cookies->get('BEARER');
         //dd($token);
-        $token_trim = explode('=', $token)[1];
-        $token_trim = explode(';', $token_trim)[0];
+        //$token_trim = explode(';', $token)[1];
+        //$token_trim = explode('=', $token_trim)[1];
         //dd($token_trim, $token);
-        $token_decoded = $jwtEncoder->decode($token_trim);
+        $token_decoded = $jwtEncoder->decode($token);
         if ($user->getEmail() == $token_decoded["username"]) {
             return true;
         }
@@ -68,23 +68,25 @@ class UserController extends AbstractController
             return $this->json('invalid token', 403);
         }
 
-        $json = $request->getContent();
-        if (!$json) {
+        $data = $request->request->all();
+        if ($request->isMethod('GET')) {
             //recup user et renvoie
             return $this->json($user, 200);
         } else {
             //patch les donée
-
+            $icon = $request->files->get('icon'); //OK
             $error = $validator->validate($user);
             if (count($error) > 0) {
                 return $this->json($error, 400);
             }
-            //dd($user);
-            $serializer->deserialize($json, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
+            $this->uploadImageRoom($icon, $id);
+            $user->setEmail($data["email"]);
+            $user->setPseudo($data["pseudo"]);
+            
             $user->setUpdatedAt(new DateTime());
 
             $this->getDoctrine()->getManager()->flush();
-            return $this->json(200);
+            return $this->json($user, 200);
         }
     }
 
@@ -109,40 +111,28 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/icon", name="user_icon", methods={"POST", "GET"})
+     * function treating the upload of the icon from edit_user route 
      */
-    public function uploadImageRoom(Request $request, User $user,JWTEncoderInterface $jwtEncoder)
+    public function uploadImageRoom($file, $user)
     {
-        if ($this->checkToken($jwtEncoder, $request, $user)) {
-            if ($request->isMethod('POST')) {
-                $file = $request->files->get('icon');
-                
-                if ($file) {
-                    $fileName = uniqid() . '.' . $file->guessExtension();
-                    
+        $userEntity = $this->getDoctrine()->getRepository(User::class)->find($user);
+        
+        if ($file) {
+            $fileName = uniqid() . '.' . $file->guessExtension();
+            
 
-                    $file->move($this->getParameter('icon_directory'), $fileName);
-                    //dd($this->getParameter('icon_directory'));
-                    $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)
-                        ->resize(400, null, function ($constraint) 
-                            {
-                                $constraint->aspectRatio();
-                            })
-                        ->save();
-                    $user->setIcon($fileName);
-                }
-                
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->flush();
-                
-                return $this->json($user->getIcon(), 200);
-            }
-            //part where we send the picture
-            $image = Image::make($this->getParameter('icon_directory').'/'.$user->getIcon());
-            return $image->response();
+            $file->move($this->getParameter('icon_directory'), $fileName);
+            //dd($this->getParameter('icon_directory'));
+            $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)
+                ->resize(400, null, function ($constraint) 
+                    {
+                        $constraint->aspectRatio();
+                    })
+                ->save();
+            $userEntity->setIcon($fileName);
         }
-        else {
-            return $this->json('invalid token', 403);
-        }
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->flush();
     }
 }

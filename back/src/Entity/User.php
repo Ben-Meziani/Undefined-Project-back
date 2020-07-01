@@ -73,6 +73,7 @@ class User implements UserInterface
     private $dices;
 
     /**
+
      * @ORM\ManyToMany(targetEntity=Room::class, inversedBy="players")
      */
     private $rooms;
@@ -81,6 +82,16 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=Room::class, mappedBy="gameMaster", orphanRemoval=true)
      */
     private $roomsGameMaster;
+
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $activation_token;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $reset_token;
+
 
     public function __construct()
     {
@@ -272,6 +283,7 @@ class User implements UserInterface
         return $this;
     }
 
+
     /**
      * @return Collection|Room[]
      */
@@ -286,8 +298,19 @@ class User implements UserInterface
             $this->rooms[] = $room;
         }
 
+    public function getActivationToken(): ?string
+    {
+        return $this->activation_token;
+    }
+
+    public function setActivationToken(?string $activation_token): self
+    {
+        $this->activation_token = $activation_token;
+
+
         return $this;
     }
+
 
     public function removeRoom(Room $room): self
     {
@@ -325,6 +348,16 @@ class User implements UserInterface
                 $roomsGameMaster->setGameMaster(null);
             }
         }
+
+    public function getResetToken(): ?string
+    {
+        return $this->reset_token;
+    }
+
+    public function setResetToken(?string $reset_token): self
+    {
+        $this->reset_token = $reset_token;
+
 
         return $this;
     }
