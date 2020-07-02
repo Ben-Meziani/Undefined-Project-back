@@ -33,8 +33,8 @@ class SecurityController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
         //dd(empty($error));
         if (empty($error)) {
-          // return $this->json(200);
-           return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+           return $this->json(200);
+           
         } else {
             return $this->json($error, 401);
         }
@@ -58,12 +58,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/forgotten-pass", name="app_forgotten_password")
      */
-    public function forgottenPass(
-        Request $request,
-        UserRepository $user,
-        \Swift_Mailer $mailer,
-        TokenGeneratorInterface $tokenGenerator
-    ): Response {
+    public function forgottenPass(Request $request,UserRepository $user, \Swift_Mailer $mailer, TokenGeneratorInterface $tokenGenerator): Response {
         // On initialise le formulaire
         $form = $this->createForm(ResetPassType::class);
         //decode json
@@ -121,43 +116,73 @@ class SecurityController extends AbstractController
 
 
         // On redirige vers la page de login
-        return $this->json($token, 200);
+        return $this->json(200);
         
     }
-
 
     /**
      * @Route("/reset_pass/{token}", name="app_reset_password")
      */
     public function resetPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder)
     {
-        $newPassword = json_decode($request->getContent());
         // On cherche un utilisateur avec le token donné
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['reset_token' => $token]);
-
+ // On initialise le formulaire
+        $form = $this->createForm(ResetPassType::class);
         // Si l'utilisateur n'existe pas
         if ($user === null) {
+            dd('cou');
             // On affiche une erreur
-            
-            return $this->json('token invalid', 401);
-        } else {
-            // Si le formulaire est envoyé en méthode post
-            
+            $this->addFlash('danger', 'Token Inconnu');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Si le formulaire est envoyé en méthode post
+        //if ($request->isMethod('POST')) {
             // On supprime le token
             $user->setResetToken(null);
 
             // On chiffre le mot de passe
-            $user->setPassword($passwordEncoder->encodePassword($user, $newPassword->password));
+            //$user->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
+            $form->handleRequest($request);
 
+            if ($form->isSubmitted() && $form->isValid()) {
+                // A password reset token should be used only once, remove it.
+    
+                // Encode the plain password, and set it.
+                $encodedPassword = $passwordEncoder->encodePassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                );
+
+                $user->setPassword($encodedPassword);
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                //dump($form->get('plainPassword')->getData());
+                //dd($user);
+    
+             
+                //return $this->redirect('http://adressedusite.com');
+                return $this->redirectToRoute('homepage');
+            } else{
+            //dd('coucou');
+                $this->addFlash('reset_password_error',
+                    'There was a problem validating your reset request - %s'
+                );
+            }
+/* 
             // On stocke
             $entityManager = $this->getDoctrine()->getManager();
-            //$entityManager->persist($user);
+            $entityManager->persist($user);
             $entityManager->flush();
-            return $this->json('mdp modifié', 200);
-             
-            
-         
-        }
-     
+ */
+
+            // Si on n'a pas reçu les données, on affiche le formulaire
+            return $this->render('security/reset_password.html.twig', ['passwordForm' => $form->createView(), 'token' => $token]);
+        
+
     }
+
 }
