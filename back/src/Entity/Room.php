@@ -6,18 +6,20 @@ use App\Repository\RoomRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+
+
 
 /**
  * @ORM\Entity(repositoryClass=RoomRepository::class)
  */
 class Room
 {
+    
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
-    private $id;
+    private $uuid;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -28,16 +30,6 @@ class Room
      * @ORM\Column(type="string", length=255)
      */
     private $theme;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $player;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $gameMaster;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -68,11 +60,36 @@ class Room
      * @ORM\ManyToMany(targetEntity=Dice::class, mappedBy="room_id")
      */
     private $dices;
+   /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="rooms")
+     */
+    private $players;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="roomsGameMaster")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $gameMaster;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $roomPassword;
 
     public function __construct()
     {
         $this->pseudos = new ArrayCollection();
         $this->dices = new ArrayCollection();
+        $this->uuid = uniqid('id');
+        $this->players = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -100,30 +117,6 @@ class Room
     public function setTheme(string $theme): self
     {
         $this->theme = $theme;
-
-        return $this;
-    }
-
-    public function getPlayer(): ?string
-    {
-        return $this->player;
-    }
-
-    public function setPlayer(string $player): self
-    {
-        $this->player = $player;
-
-        return $this;
-    }
-
-    public function getGameMaster(): ?string
-    {
-        return $this->gameMaster;
-    }
-
-    public function setGameMaster(string $gameMaster): self
-    {
-        $this->gameMaster = $gameMaster;
 
         return $this;
     }
@@ -228,6 +221,83 @@ class Room
             $this->dices->removeElement($dice);
             $dice->removeRoomId($this);
         }
+
+        return $this;
+    }
+
+
+    /**
+     * Get the value of uuid
+     *
+     * @return  \Ramsey\Uuid\UuidInterface
+     */ 
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Set the value of uuid
+     *
+     * @param  \Ramsey\Uuid\UuidInterface  $uuid
+     *
+     * @return  self
+     */ 
+    
+    public function setUuid(\Ramsey\Uuid\UuidInterface $uuid)
+    {
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getPlayers(): Collection
+    {
+        return $this->players;
+    }
+
+    public function addPlayer(User $player): self
+    {
+        if (!$this->players->contains($player)) {
+            $this->players[] = $player;
+            $player->addRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlayer(User $player): self
+    {
+        if ($this->players->contains($player)) {
+            $this->players->removeElement($player);
+            $player->removeRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function getGameMaster(): ?User
+    {
+        return $this->gameMaster;
+    }
+
+    public function setGameMaster(?User $gameMaster): self
+    {
+        $this->gameMaster = $gameMaster;
+
+        return $this;
+    }
+
+    public function getRoomPassword(): ?string
+    {
+        return $this->roomPassword;
+    }
+
+    public function setRoomPassword(string $roomPassword): self
+    {
+        $this->roomPassword = $roomPassword;
 
         return $this;
     }

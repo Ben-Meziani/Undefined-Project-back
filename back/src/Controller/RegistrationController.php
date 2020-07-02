@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class RegistrationController extends AbstractController
 {
@@ -34,16 +35,35 @@ class RegistrationController extends AbstractController
     public function register(Request $request, SerializerInterface $serializer, EntityManagerInterface $em, ValidatorInterface $validator, \Swift_Mailer  $mailer)
     {
         $user = new User();
-        $json = $request->getContent();
+        $json = $request->request->all();
+        if(!is_null($json)) {
+            $json = ['json' => $request->getContent()];
+            
+        }
+        $user = $serializer->deserialize($json['json'], User::class, 'json');
+        //add icon file
+        if(!is_null($request->files->get('icon'))) {
+            $file = $request->files->get('icon');
+            if ($file) {
+                $fileName = uniqid() . '.' . $file->guessExtension();
+                $file->move($this->getParameter('icon_directory'), $fileName);
+                $file = Image::make($this->getParameter('icon_directory').'/'.$fileName)
+                    ->resize(400, null, function ($constraint) 
+                        {
+                            $constraint->aspectRatio();
+                        })
+                    ->save();
+                $user->setIcon($fileName);
+            }
+        }
 
-        $user = $serializer->deserialize($json, User::class, 'json');
+        $user->setCreatedAt(new DateTime());
        
+        //encode password
         $user->setPassword($this->passwordEncoder->encodePassword(
             $user,
             $user->getPassword()
         ));
-
-        $user->setCreatedAt(new DateTime());
         
         $error = $validator->validate($user);
         if (count($error) > 0) {
@@ -97,8 +117,7 @@ class RegistrationController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        $this->addflash('message', 'Vous avez bien activé votre compte');
-
         return $this->json($user, 200);
+
      }
 }

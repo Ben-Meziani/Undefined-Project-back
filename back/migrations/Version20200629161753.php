@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200623172613 extends AbstractMigration
+final class Version20200629161753 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -20,12 +20,12 @@ final class Version20200623172613 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE user ADD activation_token VARCHAR(50) DEFAULT NULL');
+        $this->addSql('ALTER TABLE room CHANGE uuid uuid VARCHAR(255) NOT NULL');
     }
 
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE user DROP activation_token');
+        $this->addSql('ALTER TABLE room CHANGE uuid uuid INT NOT NULL');
     }
 }

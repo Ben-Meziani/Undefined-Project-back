@@ -17,10 +17,11 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
-     * @Route("/login", name="app_login")
+     * @Route("", name="app_login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+
 
 
         // if ($this->getUser()) {
@@ -31,6 +32,7 @@ class SecurityController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
 
         $lastUsername = $authenticationUtils->getLastUsername();
+
         //dd(empty($error));
         if (empty($error)) {
            return $this->json(200);
