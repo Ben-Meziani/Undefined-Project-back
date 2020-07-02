@@ -58,11 +58,11 @@ class RoomController extends AbstractController
         $json = $request->getContent();
         $room = $serializer->deserialize($json, Room::class, 'json');
         //decode to retreive game master id
-        $gmId = get_object_vars(json_decode($json));
-        $user = $this->getDoctrine()->getRepository(User::class)->find($gmId['gameMaster']);
+        $data = get_object_vars(json_decode($json));
+        $user = $this->getDoctrine()->getRepository(User::class)->find($data['gameMaster']);
         $room->setTheme('HP');
         $room->setGameMaster($user);
-        $room->setRoomPassword(uniqid("pw"));
+        $room->setRoomPassword($data['password']);
         //dd($room);
     
         $error = $validator->validate($room);
