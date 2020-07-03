@@ -30,7 +30,9 @@ class ExceptionListener extends AbstractController
             $role = 2;
             $roomId = $roomUniqueIdGM[0]->getUuid();
             $roomFile = $roomUniqueIdGM[0]->getFiles();
-    
+            if (empty($roomFile)) {
+                $roomFile = "";
+            }
         }
         
         
