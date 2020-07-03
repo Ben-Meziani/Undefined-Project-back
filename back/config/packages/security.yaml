@@ -37,6 +37,9 @@ security:
         forgotten:
             pattern: ^/forgotten
             anonymous: true
+        reset_password:
+            pattern: ^/reset_pass
+            anonymous: true
         main:
             pattern:   ^/
             anonymous: false
