@@ -74,12 +74,12 @@ class User implements UserInterface
 
     /**
 
-     * @ORM\ManyToMany(targetEntity=Room::class, inversedBy="players")
+     * @ORM\ManyToMany(targetEntity=Room::class, inversedBy="players", fetch="EAGER")
      */
     private $rooms;
 
     /**
-     * @ORM\OneToMany(targetEntity=Room::class, mappedBy="gameMaster", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Room::class, mappedBy="gameMaster", orphanRemoval=true, fetch="EAGER")
      */
     private $roomsGameMaster;
 
@@ -298,6 +298,7 @@ class User implements UserInterface
         if (!$this->rooms->contains($room)) {
             $this->rooms[] = $room;
         }
+        return $this;
     }
     
     public function getActivationToken(): ?string

@@ -64,7 +64,8 @@ class RoomController extends AbstractController
         $room->setTheme('HP');
         $room->setGameMaster($user);
         $room->setRoomPassword($data['password']);
-        
+        $user->addRoomsGameMaster($room);
+        //dd($user);
     
         $error = $validator->validate($room);
         if (count($error) > 0) {
@@ -102,6 +103,7 @@ class RoomController extends AbstractController
                 return $this->json("invalid room credentials", 401);
             }
             $roomEntity = $this->getDoctrine()->getRepository(Room::class)->find($room[0]['id']);
+            //dd($user);
             if($roomEntity->getGameMaster()->getId() !== $user->getId()){
                 $roomEntity->addPlayer($user);
                 $em->flush();
