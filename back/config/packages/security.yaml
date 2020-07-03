@@ -34,6 +34,9 @@ security:
         activation:
             pattern: ^/activation
             anonymous: true
+        forgotten:
+            pattern: ^/forgotten
+            anonymous: true
         main:
             pattern:   ^/
             anonymous: false
