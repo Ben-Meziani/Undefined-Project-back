@@ -41,7 +41,7 @@ class RoomController extends AbstractController
 
                 $room->setFiles($fileName);
             }
-            //dd($room);
+            $room->setUpsatedAt(new DateTime());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
             return $this->json($room->getFiles(), 200);
