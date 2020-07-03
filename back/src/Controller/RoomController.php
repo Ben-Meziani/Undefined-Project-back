@@ -103,15 +103,13 @@ class RoomController extends AbstractController
                 return $this->json("invalid room credentials", 401);
             }
             $roomEntity = $this->getDoctrine()->getRepository(Room::class)->find($room[0]['id']);
-            //dd($user);
+            $roomEntity->addPlayer($user);
+            $em->flush();
             if($roomEntity->getGameMaster()->getId() !== $user->getId()){
-                $roomEntity->addPlayer($user);
-                $em->flush();
-                //$roomArray = $roomEntity->getPlayers()->toArray();
-                
-                return $this->json(200);
+
+                return $this->json(['role' => 2], 200);
             } else {
-                return $this->json('already game master', 401);
+                return $this->json(['role' => 1], 200);
             }
         } else {
             return $this->json('no json', 400);
