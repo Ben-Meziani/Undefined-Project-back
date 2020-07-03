@@ -76,7 +76,7 @@ class RoomController extends AbstractController
         
          
 
-        return $this->json(['uniqueId'=>$room->getUuid(), 'paswword'=>$room->getRoomPassword()], 200);
+        return $this->json(['uniqueId'=>$room->getUuid(), 'password'=>$room->getRoomPassword()], 200);
     }
 
     /**
