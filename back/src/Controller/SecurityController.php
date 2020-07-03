@@ -165,8 +165,8 @@ class SecurityController extends AbstractController
                 //dd($user);
     
              
-                //return $this->redirect('http://adressedusite.com');
-                return $this->redirectToRoute('homepage');
+                return $this->redirect('https://undefined-project.tk/');
+                //return $this->redirectToRoute('homepage');
             } else{
             //dd('coucou');
                 $this->addFlash('reset_password_error',

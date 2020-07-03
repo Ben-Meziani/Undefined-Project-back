@@ -10,7 +10,7 @@ class ExceptionListener
     public function onKernelException(AuthenticationSuccessEvent $event)
     {
         $user = $event->getUser();
-       
-        $event->setData(['id'=>$user->getId(),'pseudo'=>$user->getPseudo(),'email'=>$user->getEmail(), 'icon'=>$user->getIcon()]);
+        
+        $event->setData(['id'=>$user->getId(),'pseudo'=>$user->getPseudo(),'email'=>$user->getEmail(), 'icon'=>$user->getIcon(), 'room'=>$user->getRooms()]);
     }
 }
