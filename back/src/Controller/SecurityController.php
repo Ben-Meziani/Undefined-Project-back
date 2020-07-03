@@ -133,7 +133,6 @@ class SecurityController extends AbstractController
         $form = $this->createForm(ResetPassType::class);
         // Si l'utilisateur n'existe pas
         if ($user === null) {
-            dd('cou');
             // On affiche une erreur
             $this->addFlash('danger', 'Token Inconnu');
             return $this->redirectToRoute('app_login');
