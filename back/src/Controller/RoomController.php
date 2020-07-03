@@ -30,8 +30,8 @@ class RoomController extends AbstractController
     public function uploadImageRoom(Request $request, Room $room)
     {
         if ($request->isMethod('POST')) {
-            $file = $request->files->get('post');
-
+            $file = $request->files->get('image');
+            
             if ($file) {
                 $fileName = uniqid() . '.' . $file->guessExtension();
 
@@ -39,7 +39,7 @@ class RoomController extends AbstractController
 
                 $room->setFiles($fileName);
             }
-
+            //dd($room);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
             return $this->json($room->getFiles(), 200);

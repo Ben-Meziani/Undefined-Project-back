@@ -14,11 +14,11 @@ class ExceptionListener extends AbstractController
         $user = $event->getUser();
         //$fullUser = $this->getDoctrine()->getRepository(User::class)->find($userId)->getRooms();
         //$room = $this->getDoctrine()->getRepository(Room::class)->find(1);
-        //dd($user->getRoomsGameMaster()->toArray());
         $roomUniqueIdGM = $user->getRoomsGameMaster()->toArray();
         $roomUniqueId = $user->getRooms()->toArray();
         if (empty($roomUniqueIdGM)) {
-            $roomUniqueIdGM = "";
+            $roomFile = "";
+
             if (empty($roomUniqueId)) {
                 $roomId = "";
                 $role = 0;
@@ -29,9 +29,11 @@ class ExceptionListener extends AbstractController
         } else {
             $role = 2;
             $roomId = $roomUniqueIdGM[0]->getUuid();
+            $roomFile = $roomUniqueIdGM[0]->getFiles();
+    
         }
         
         
-        $event->setData(['id'=>$user->getId(),'pseudo'=>$user->getPseudo(),'email'=>$user->getEmail(), 'icon'=>$user->getIcon(), 'roomId' => $roomId, 'role' => $role]);
+        $event->setData(['id'=>$user->getId(),'pseudo'=>$user->getPseudo(),'email'=>$user->getEmail(), 'icon'=>$user->getIcon(), 'roomId' => $roomId, 'role' => $role, 'roomImage' => $roomFile]);
     }
 }
