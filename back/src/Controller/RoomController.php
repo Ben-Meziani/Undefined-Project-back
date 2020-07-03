@@ -27,9 +27,11 @@ class RoomController extends AbstractController
     /**
      * @Route("/{id}/upload", name="room_upload", methods={"POST", "GET"})
      */
-    public function uploadImageRoom(Request $request, Room $room)
+    public function uploadImageRoom(Request $request, $id)
     {
+        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['uuid' => $id]);
         if ($request->isMethod('POST')) {
+            //dd($room);
             $file = $request->files->get('image');
             
             if ($file) {
