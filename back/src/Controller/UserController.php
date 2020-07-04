@@ -50,7 +50,8 @@ class UserController extends AbstractController
     {   
         //dd($this->checkToken($jwtEncoder, $request, $user));
         if ($this->checkToken($jwtEncoder, $request, $user)) {
-            return $this->json($user, 200);
+            return $this->json(["id" => $user->getId(),"email" => $user->getEmail(),"pseudo" => $user->getPseudo(),"icon" => $user->getIcon()], 200);
+            //return $this->json($user, 200);
         }
         else {
             return $this->json('token invalid', 403);
