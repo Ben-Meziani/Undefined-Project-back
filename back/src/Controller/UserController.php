@@ -86,7 +86,7 @@ class UserController extends AbstractController
             $user->setUpdatedAt(new DateTime());
 
             $this->getDoctrine()->getManager()->flush();
-            return $this->json($user, 200);
+            return $this->json(200);
         }
     }
 
