@@ -31,8 +31,8 @@ class RoomController extends AbstractController
     {
         $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['uuid' => $id]);
         if ($request->isMethod('POST')) {
-            //dd($room);
             $file = $request->files->get('image');
+            dd($room, $file);
             
             if ($file) {
                 $fileName = uniqid() . '.' . $file->guessExtension();
