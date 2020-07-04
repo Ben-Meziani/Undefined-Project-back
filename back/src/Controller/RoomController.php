@@ -32,7 +32,7 @@ class RoomController extends AbstractController
         $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['uuid' => $id]);
         if ($request->isMethod('POST')) {
             $file = $request->files->get('roomImage');
-            dd($file);
+            //dd($file);
             
             if ($file) {
                 $fileName = uniqid() . '.' . $file->guessExtension();
@@ -41,7 +41,7 @@ class RoomController extends AbstractController
 
                 $room->setFiles($fileName);
             }
-            $room->setUpsatedAt(new DateTime());
+            $room->setUpdatedAt(new DateTime());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
             return $this->json($room->getFiles(), 200);
