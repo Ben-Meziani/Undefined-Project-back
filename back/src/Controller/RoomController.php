@@ -23,7 +23,26 @@ use Ramsey\Uuid\Uuid;
  */
 class RoomController extends AbstractController
 {
- 
+    
+    /**
+     * @Route("/{id}/view", name="room_view", methods={"GET"})
+     */
+    public function viewRoom($id)
+    {
+        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['uuid' => $id]);
+
+        return $this->json([
+            "uniqueId" => $room->getUuid(),
+            "name" => $room->getName(),
+            "theme" => $room->getTheme(),
+            "files" => $room->getFiles(),
+            "player_number" => $room->getPlayerNumber(),
+            "room_password" => $room->getRoomPassword(),
+            "created_at" => $room->getCreatedAt()
+        ]);
+    }
+
+
     /**
      * @Route("/{id}/upload", name="room_upload", methods={"POST", "GET"})
      */
