@@ -114,10 +114,10 @@ class RegistrationController extends AbstractController
         // On supprime le token
         $user->setActivationToken(null);
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($user);
+        //$entityManager->persist($user);
         $entityManager->flush();
 
-        return $this->json($user, 200);
+        return $this->render('emails/acountActivated.twig');
 
-     }
+    }
 }
